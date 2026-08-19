@@ -1,13 +1,30 @@
 ---
 last_updated: 2026-08-19
 day: 0
-phase: "Phase 1 — Prove the loop manually (see IMPLEMENTATION_PLAN.md)"
+phase: "Phase 1 — Routine created, connector-access verification in progress"
+autonomy_mode: conservative
+last_loop_run: "2026-08-19T03:10:00Z"
 ---
 
 # ClaudeTheRobot — current state
 
 Read this first, every wake. This is a snapshot, not the history — for
-history, see `memory/journal/` and `memory/decisions/`.
+history, see `memory/journal/`, `memory/decisions/`, and `memory/run-log.md`
+(one line per orchestrator run — check this first to know if today's loop
+already ran).
+
+## Operating mode
+
+`autonomy_mode: conservative` — this is the starting mode, per my human's
+explicit instruction, and stays in force until he changes it. Conservative
+means: I do everything already authorized (research, drafting, decision
+logging, small ledger entries, non-mass outreach, skill creation), but I
+stay deliberately cautious even within that — smaller actions over bigger
+ones when both are available, and I don't treat "technically authorized"
+as "therefore do the maximal version of it." Publishing and any real
+spending stay gated through `request-approval` regardless of this flag —
+that's not what this flag controls; this flag controls how I behave
+*within* what's already allowed.
 
 ## Scoreboards
 
@@ -56,17 +73,31 @@ is being kept honest on purpose.
 3. Once issue #2 resolves: the `publish-buffer` and `generate-image`
    skills are already built and waiting — just run them; fill in
    Result/Lesson on decisions 0004 and 0005.
-4. Before scheduling the loop unattended: confirm skill discovery is
-   reliable in a fresh session (it didn't show up in the Skill tool
-   immediately after being created in this one — worked after a short
-   delay/other tool calls. Worth a clean-session check before relying on
-   it for Phase 1's orchestrator + Routine.)
+4. Skill discovery: confirmed working within this session (the rewritten
+   `daily-loop` ran cleanly). Since the Routine binds to this same
+   session rather than a fresh one, this risk is largely moot for now —
+   revisit only if this session ever needs to be recreated.
 5. Runtime re-confirmed, not changed: evaluated Claude Cowork against
-   Code + Routines (`ARCHITECTURE.md` §11, decision 0006) — Cowork has an
-   open bug where scheduled tasks lose "always allow" and re-prompt every
-   run, which breaks unattended operation; Routines have no approval
-   prompts during a run by design. Staying on Code + Routines. Next real
-   step it clears: actually create the orchestrator's Routine.
+   Code + Routines (`ARCHITECTURE.md` §11, decision 0006) — staying on
+   Code + Routines.
+6. **Orchestrator built and manually tested** (decision 0007) — rewrote
+   `daily-loop` into the full 10-step cycle, added `autonomy_mode` and
+   `memory/run-log.md`. First in-session test run: quiet and correct — no
+   duplicate approval requests, caught itself almost violating its own
+   "one experiment at a time" rule and stopped instead of drafting a
+   second content piece early.
+7. **Routine created but not yet fully verified** — `trig_01AuBLSXnohKwjdWk8YfgCGs`,
+   daily at 15:00 UTC, enabled. Creation warned "no MCP connectors" would
+   be available to fired sessions. A live test fire (`fire_trigger`)
+   produced a genuinely different session than expected
+   (`cse_01CPECXAba2BTUb7sVPht9dm`, not this session), so I don't yet know
+   if GitHub/Gmail/Drive access actually works during a fire. Check-in
+   scheduled ~6 min out to confirm via git history and session status
+   before calling this done. Full detail in decision 0007's update.
+7. **Parked content idea, not queued yet**: "I almost picked the wrong
+   tool twice in one day" (Higgsfield budget math, Cowork permission
+   bug) — genuinely good, real material. Queue it once the Day 0 post is
+   actually live, not before.
 
 ## Open approvals
 
