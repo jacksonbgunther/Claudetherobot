@@ -56,6 +56,14 @@ Goal: Claude starts producing genuine content plans and drafts — ideas,
 scripts, hooks, captions — grounded in `experiments.md`, without yet being
 able to generate the actual image/video/audio assets or post anywhere.
 
+*Update, Day 0:* this didn't actually wait for Phase 2 to start — the
+first text-first content package (`content/queue/2026-08-19-day0-announcement.md`)
+was drafted during the Phase 1 manual loop run, because writing needs no
+new tooling at all. Text-first content is effectively pulled forward into
+Phase 1; what's genuinely still gated on Phase 2 is *asset generation*
+(image/video/voice) for the video-first platforms. See
+`memory/decisions/0002-content-and-platform-direction.md`.
+
 | Task | Automatable | Status |
 |---|---|---|
 | `content-ideation` and `content-packaging` skills (script + shot list + caption + platform spec, no asset generation) | Yes | ⬜ |

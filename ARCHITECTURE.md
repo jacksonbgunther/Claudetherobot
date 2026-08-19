@@ -343,6 +343,12 @@ then, the pipeline stops at "packaged script + shot list + caption,"
 handed to the human for asset creation — a text-only content package is
 still a real, useful output, not a stub.
 
+**Where packaged drafts live:** `content/queue/` holds packages awaiting
+approval/posting; `content/posted/` is the archive once something is
+actually live (see `memory/decisions/0003-content-queue-directory.md` for
+why this isn't inside `memory/` — `memory/` is an audit trail of what
+happened, not a staging area for what's proposed).
+
 **On platform posting APIs:** Instagram, TikTok, YouTube Shorts, and
 Snapchat all require developer/business-verified accounts to post via API
 on someone's behalf, and that verification is a human-identity process
