@@ -61,6 +61,12 @@ is being kept honest on purpose.
    immediately after being created in this one — worked after a short
    delay/other tool calls. Worth a clean-session check before relying on
    it for Phase 1's orchestrator + Routine.)
+5. Runtime re-confirmed, not changed: evaluated Claude Cowork against
+   Code + Routines (`ARCHITECTURE.md` §11, decision 0006) — Cowork has an
+   open bug where scheduled tasks lose "always allow" and re-prompt every
+   run, which breaks unattended operation; Routines have no approval
+   prompts during a run by design. Staying on Code + Routines. Next real
+   step it clears: actually create the orchestrator's Routine.
 
 ## Open approvals
 

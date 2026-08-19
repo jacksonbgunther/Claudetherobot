@@ -12,6 +12,9 @@ Claude* and is subordinate to it — nothing here overrides the constitution.
 
 ## 1. Decision: Runtime is Claude Code Remote itself, not a bespoke agent service
 
+*Re-evaluated Day 0 against Claude Cowork as a possible alternative/addition
+— confirmed, not changed. See §11 for the full comparison.*
+
 **Decided:** ClaudeTheRobot runs *inside* Claude Code (this environment) —
 using Claude Code Remote sessions, Routines (scheduled triggers), MCP
 connectors, Skills, and this git repository as durable storage. There is no
@@ -399,3 +402,134 @@ turning analysis into content).
 - Automated payments of any kind.
 
 See `IMPLEMENTATION_PLAN.md` for the phased path from here to those.
+
+---
+
+## 11. Runtime re-evaluation: Claude Cowork considered, Claude Code + Routines confirmed
+
+Prompted by an explicit question from my human: now that Claude Cowork
+exists as an option, should it be part of ClaudeTheRobot's runtime? This
+section is research plus a formal recommendation — **no architecture
+change was made as part of this section**; §1's decision stands, this
+just re-tests it against a real alternative instead of assuming it still
+holds.
+
+### The requirement being optimized for
+
+> "I should be able to leave ClaudeTheRobot alone and have it continue
+> working toward its goals without requiring me to manually initiate every
+> session."
+
+Everything below is judged against that, not against feature checklists.
+
+### What each option actually is (researched 2026-08-19)
+
+- **Claude Code Remote** — the substrate this whole project already runs
+  on: cloud sessions, git-tracked repos, MCP connectors, Skills. On its
+  own (no Routines), it's not autonomous — sessions run when a human or
+  another mechanism starts them.
+- **Routines** (`code.claude.com/docs/en/routines`) — scheduled/API/GitHub-
+  triggered automation *for* Claude Code. Confirmed directly from
+  Anthropic's docs: routines "execute on Anthropic-managed cloud
+  infrastructure... so they keep working when your laptop is closed," and
+  critically, **"Routines run autonomously as full Claude Code cloud
+  sessions: there is no permission-mode picker and no approval prompts
+  during a run."** Minimum interval is 1 hour; there's a daily cap on
+  routine runs tied to the subscription plan; a routine can bind to a
+  fresh session per fire or (via the `persistent_session_id` mechanism
+  this project already uses) wake the same orchestrator session. Routines
+  use the same git repos, MCP connectors, and Skills already built here —
+  nothing new to integrate.
+- **Claude Cowork** — a separate product, aimed at non-technical knowledge
+  work: file/folder-based (not git-native), built around "Projects" with
+  attached folders for persistent memory and instructions, 132 pre-built
+  skills and 131 pre-installed connectors of its own, plus "Dispatch"
+  (computer-use/browser control). It does support scheduled recurring
+  tasks that run server-side with the device offline — comparable to
+  Routines on that specific point.
+- **A future external agent/server** — a bespoke, self-hosted system
+  (already evaluated and rejected in §1 for the same reasons, strengthened
+  further below).
+
+### Findings that actually decide this
+
+1. **Cowork's unattended-execution story has a real, currently-open
+   reliability bug that directly breaks the requirement being optimized
+   for.** Multiple reports (tracked as open issues against
+   `anthropics/claude-code`, e.g. #32199, #47180) describe scheduled Cowork
+   tasks re-prompting for "Always allow" permission on *every* run instead
+   of persisting the choice, stalling the task until a human manually
+   clicks through — the opposite of "leave it alone." Routines have no
+   such mode: no permission prompts occur during a run at all, by design.
+   For a project whose entire premise is "operate with minimal
+   intervention," this alone is close to disqualifying for Cowork as the
+   *runtime*.
+2. **Cowork's persistent memory model doesn't match this project's design
+   at all.** Cowork memory lives inside "Projects" tied to attached
+   folders — not git. This project's memory system (`ARCHITECTURE.md` §3)
+   depends specifically on git history for the audit trail Constitution
+   §90 and §107 require (diffable, blame-able, a real decision history).
+   Moving to Cowork would mean rebuilding that guarantee from scratch, for
+   no corresponding gain.
+3. **Cowork is optimized for a different job than this one.** Its value —
+   132 curated skills, 131 pre-installed connectors, document/research
+   workflows, Dispatch for clicking through web UIs — targets ad hoc
+   knowledge work for non-technical users. ClaudeTheRobot is closer to a
+   small, self-documenting software business than a document-management
+   task, and Claude Code's git-native, MCP-and-Skill-driven model is the
+   better fit, confirmed rather than assumed this time.
+4. **Routines validate a design choice already made.** The fact that
+   routine runs have *zero* built-in approval gating is exactly why
+   `ARCHITECTURE.md` §6's own async, GitHub-issue-based approval system
+   isn't optional scaffolding — it's the only checkpoint that exists once
+   a routine is running unattended. This re-evaluation reinforces §6
+   rather than changing it.
+5. **The daily routine-run cap and 1-hour minimum interval are real
+   operating constraints, not blockers.** ClaudeTheRobot's loop is
+   day-granularity by design (Constitution's whole framing is daily/weekly
+   cadence, not minute-level reactivity), so neither limit is currently
+   binding. Worth re-checking if the operating cadence ever needs to
+   tighten.
+6. **The case against a bespoke external server is now stronger, not just
+   unchanged.** Routines already provide scheduled, API, and GitHub-event
+   triggers against git repos and MCP connectors — precisely the surface
+   a custom scheduler/webhook service would have to be built to replicate.
+   Nothing found in this research identifies a capability gap that
+   justifies that cost.
+
+### Comparison
+
+| Option | Autonomy (leave-alone-ability) | Engineering complexity | Cost | Fit with existing git/Skills/approval design | Verdict |
+|---|---|---|---|---|---|
+| 1. Claude Code Remote (no scheduling) | Low — needs a human or external trigger to start each session | None beyond what's built | $0 marginal | N/A — this is the substrate | Foundation only, not sufficient alone |
+| 2. Claude Cowork alone | **Undermined by the "Always allow" scheduled-task bug** | Would require rebuilding memory/approval design around folders, not git | $0 marginal (bundled in plan) | Poor — not git-native | **Not recommended** |
+| 3. Claude Code + Cowork | Same reliability gap as #2 for anything routed through Cowork | Two runtime paradigms to maintain instead of one | $0 marginal | Fragmented — split source of truth | **Not recommended** as core runtime |
+| **4. Claude Code + Routines** | **High — routines run with no approval prompts, server-side, laptop closed** | Lowest — reuses everything already built (repo, Skills, MCP connectors) | $0 marginal (usage counts against existing subscription) | **Native — same git repo, same Skills, same connectors** | **Recommended** |
+| 5. Claude Code + Cowork + Routines | High where Routines are used, undermined wherever Cowork is | Highest — three systems to reason about | $0 marginal | Fragmented | **Not recommended** — adds Cowork's downsides without removing them |
+| 6. Future external agent/server | Could be high, but has to be built and operated | Highest by far — hosting, uptime, auth, a second deploy pipeline | Real, ongoing infra cost | Would need to reimplement what Routines already provide | **Not recommended now** — no identified capability gap justifies it |
+
+### Formal recommendation
+
+**Claude Code + Routines (option 4)** — which is what §1 and §5 already
+specify — remains ClaudeTheRobot's runtime. Claude Cowork is **not**
+adopted, in any combination, as part of the core runtime. This isn't a
+change to the architecture; it's the architecture surviving contact with
+a real alternative.
+
+**One narrow exception worth naming, not adopting today:** Cowork's
+Dispatch (computer-use/browser control) could plausibly matter later for
+one specific, bounded case — operating a platform's web UI when it
+genuinely has no API and no Buffer-style intermediary covers it (see
+`TOOL_STACK.md`). If that ever becomes a real, specific blocker, it would
+be worth evaluating Dispatch narrowly for that one task, not as a runtime
+migration. Nothing currently identified requires this — flagged here so
+it isn't rediscovered from scratch if it comes up.
+
+### What happens next
+
+Nothing changes today, per the instruction this evaluation was scoped to.
+The concrete next step this unlocks is finishing Phase 1 of
+`IMPLEMENTATION_PLAN.md`: actually creating the Routine that wakes the
+orchestrator session on a schedule, now backed by documentation-confirmed
+behavior (no approval prompts during runs, server-side execution,
+1-hour-minimum cadence) instead of assumption.
