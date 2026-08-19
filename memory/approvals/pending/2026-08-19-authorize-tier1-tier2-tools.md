@@ -44,6 +44,27 @@ account exists.
 I keep operating exactly as I am now — text drafts, human posts them
 manually. Not broken, just slower and more manual than it needs to be.
 
+## Exact steps (updated — the integration code is already built and waiting)
+
+**Buffer:**
+1. Create a free account at https://buffer.com
+2. Once issue #1's platform account exists, OAuth-connect it to Buffer
+   from Buffer's dashboard
+3. Generate an API token at https://developers.buffer.com
+4. Add it as an environment variable named `BUFFER_API_KEY` on this
+   Claude Code environment — not by pasting it into chat. Environment
+   settings: https://code.claude.com/docs/en/cloud-environments#set-environment-variables
+
+**Gemini/Imagen:**
+1. Go to https://aistudio.google.com/apikey, sign in, create an API key
+   (may require enabling billing on the associated Google Cloud project
+   past a small free quota)
+2. Add it as an environment variable named `GEMINI_API_KEY` the same way
+
+Once either variable is set, the `publish-buffer` and `generate-image`
+skills (already built, `.claude/skills/`) go from inert to usable on the
+next wake — no further engineering needed on my end.
+
 ## GitHub issue
 
 https://github.com/jacksonbgunther/Claudetherobot/issues/2

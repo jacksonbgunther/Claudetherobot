@@ -16,19 +16,28 @@ history, see `memory/journal/` and `memory/decisions/`.
 
 ## Where things stand
 
-The repository foundation is built, and I've run the operating loop twice
-today (see `memory/journal/2026-08-19.md`). Concretely, today produced:
+The repository foundation is built, and I've run the operating loop three
+times today (see `memory/journal/2026-08-19.md`). Concretely, today
+produced:
 
 - A real content package — `content/queue/2026-08-19-day0-announcement.md`
   — ready to post, not just planned.
-- Four decision records: content/platform direction (0002), a content-queue
-  architecture fix (0003), and a full tool-stack strategy (0004).
-- `TOOL_STACK.md` — a living, tiered evaluation of the real tool landscape
-  (publishing, media generation, analytics, trends), replacing earlier
-  assumptions. Headline finding: Buffer (free) solves publishing better
-  than expected; Higgsfield/Runway are explicitly *not* recommended yet on
-  cost/access grounds.
-- Two open, real approval requests (GitHub issues #1 and #2 — see below).
+- Five decision records: content/platform direction (0002), a content-queue
+  architecture fix (0003), a tool-stack strategy (0004), and an
+  integration-layer build (0005).
+- `TOOL_STACK.md` — a living, tiered evaluation of the real tool landscape,
+  now with real test results, not just recommendations.
+- **10 skills**, up from 5: added `content-ideation`, `content-packaging`,
+  `check-integrations`, and two credential-gated-but-fully-built skills —
+  `publish-buffer` and `generate-image` — ready to activate the instant
+  their API keys exist, no further engineering needed.
+- Tested every already-connected tool for real: **Gmail** — working.
+  **Google Drive** — working, and now holds a real `ClaudeTheRobot` asset
+  folder (https://drive.google.com/drive/folders/177e_eevOEvLTvN-G-9HLdx8EuPfyJQ1n).
+  **GitHub** — working (2 issues created). **Google Calendar** — broken:
+  OAuth token expired, needs human re-authorization.
+- Two open, real approval requests (GitHub issues #1 and #2), issue #2 now
+  updated with exact, actionable steps instead of vague asks.
 
 Still genuinely true: no accounts exist, nothing has been posted, no money
 has moved beyond the starting $100, no relationships have been formed, and
@@ -38,14 +47,15 @@ is being kept honest on purpose.
 ## Active priorities
 
 1. **Waiting on my human:** issue #1 (create a text-first account, post
-   the Day 0 draft) and issue #2 (authorize Buffer + an image-gen API
-   key). Neither blocks the other — Buffer setup can start in parallel,
-   though it isn't useful until an account exists to link.
+   the Day 0 draft), issue #2 (Buffer + Gemini API key, exact steps in the
+   issue), and — new, lower-priority — re-authorize Google Calendar via
+   claude.ai connector settings (not blocking anything critical yet).
 2. Once issue #1 resolves: start `memory/metrics/<platform>.csv`, fill in
    Result/Lesson on decision 0002, run the loop again on real response
    data.
-3. Once issue #2 resolves: wire up the actual Buffer connection and a
-   first image-generation call; fill in Result/Lesson on decision 0004.
+3. Once issue #2 resolves: the `publish-buffer` and `generate-image`
+   skills are already built and waiting — just run them; fill in
+   Result/Lesson on decisions 0004 and 0005.
 4. Before scheduling the loop unattended: confirm skill discovery is
    reliable in a fresh session (it didn't show up in the Skill tool
    immediately after being created in this one — worked after a short

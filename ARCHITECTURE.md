@@ -286,6 +286,13 @@ be a whole extra product for no real benefit at this scale.
   secondary notification surface (Gmail is already connected) rather than
   the system of record.
 
+**Clarification added Day 0 (decision 0005):** authorizing a publishing
+*mechanism* (e.g., connecting Buffer) is not the same as pre-authorizing
+every future post through it. Until the pipeline has a track record,
+individual posts still go through this approval flow even after Buffer
+itself is connected and linked — connecting the tool removes an
+infrastructure blocker, not the per-post judgment call.
+
 **Tradeoffs:** Requires the human to actually check GitHub/notifications —
 same as any async system. If issues pile up unanswered, gated work stalls;
 `daily-loop` should surface stale pending approvals prominently rather than
