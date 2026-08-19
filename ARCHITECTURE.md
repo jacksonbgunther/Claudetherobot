@@ -250,6 +250,33 @@ webhooks later if a platform connector ever exposes them).
 least once (proving `daily-loop` actually produces sensible output) before
 it's put on an unattended timer — see `IMPLEMENTATION_PLAN.md` Phase 1.
 
+**Update, Day 0 — a real limitation found in the activation layer, not the
+design:** `daily-loop` was built and manually tested successfully (decision
+0007). Creating the actual trigger, however, surfaced a concrete platform
+limitation: **this session's `create_trigger`/`fire_trigger` MCP tools
+cannot pass MCP connector grants (Gmail, Calendar, Drive) or repository
+access to the sessions they fire, for this organization** — confirmed by
+two explicit tool warnings and the `connectors` parameter being flatly
+rejected as unavailable for this org. A fired test session showed no
+repository attachment and produced no commits despite real execution. This
+means a trigger created this way cannot read `CONSTITUTION.md` or
+`memory/`, cannot open GitHub approval issues, and cannot be observed
+afterward (no transcript-reading tool exists from this session either —
+itself a real observability gap, not just a connector one). Full
+investigation in `memory/decisions/0007-orchestrator-routine-activation.md`.
+
+This is not a design flaw — the daily-loop cycle, the memory system, and
+the approval mechanism are all unaffected and correct. It's specific to
+*how the Routine gets created*. The tool itself names the supported fix:
+create the Routine from **claude.ai/code/routines** (the web UI) instead,
+which explicitly supports repository selection and includes connected
+connectors by default (per the documentation cited in §11). That's a
+two-minute, browser-only action — genuinely human-only, not something
+being deferred. The trigger created via the MCP tool has been **disabled**
+(not deleted — config preserved) rather than left running in a state that
+can't reliably do its job. See `IMPLEMENTATION_PLAN.md` Phase 1 for the
+current status.
+
 ---
 
 ## 6. Decision: Approvals are GitHub Issues + a pending-approval file, not a custom dashboard

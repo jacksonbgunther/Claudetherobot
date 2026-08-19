@@ -39,14 +39,30 @@ timer.
 
 | Task | Automatable | Status |
 |---|---|---|
-| Run `daily-loop` manually once, review output for voice/correctness | Yes | ⬜ |
-| Fix any rough edges in the seeded skills based on that run | Yes | ⬜ |
-| Create the orchestrator session (persistent) | Yes | ⬜ |
-| Create the daily Routine (`create_trigger`, cron) waking the orchestrator | Yes | ⬜ |
+| Run `daily-loop` manually once, review output for voice/correctness | Yes | ✅ |
+| Fix any rough edges in the seeded skills based on that run | Yes | ✅ |
+| Create the orchestrator session (persistent) | Yes | ✅ (this session — see `ARCHITECTURE.md` §11/decision 0007) |
+| Create the daily Routine (`create_trigger`, cron) waking the orchestrator | Yes | 🔴 **blocked** — trigger created but disabled; MCP-tool-created triggers can't get connector/repo access for this org. See below. |
 | Human confirms they're getting/checking notifications from `PushNotification` and GitHub issues | No — human must confirm they see them | ⏳ |
+
+**Blocked, human-only step (new, Day 0):** the scheduled Routine cannot be
+reliably created via this session's tools — confirmed by direct testing,
+not assumption (`memory/decisions/0007-orchestrator-routine-activation.md`
+has the full verification against 9 specific checks). The supported fix:
+create the Routine from **claude.ai/code/routines** (the web UI), which
+explicitly supports repository selection and includes connected
+connectors by default. Suggested config: name "ClaudeTheRobot daily
+orchestrator", prompt = the one in the disabled trigger
+(`trig_012LXh3UxmfGSoRV5KE6coXU`, still viewable/editable), repository =
+this repo, connectors = Gmail + Google Calendar + Google Drive, schedule =
+daily. Once created there, the MCP-created disabled trigger can be
+deleted to avoid confusion.
 
 Exit condition: the loop runs unattended for a few cycles and produces
 journal entries + state updates a human would actually want to read.
+**Not yet met** — this is the one thing standing between "designed" and
+"actually autonomous," and it's a two-minute human action, not more
+engineering.
 
 ---
 

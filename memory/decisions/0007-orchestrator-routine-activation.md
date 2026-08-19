@@ -205,3 +205,123 @@ from a context that passes connector grants through (the tool's own
 warning suggests this is possible, just not what happened by default
 here) — but I'd rather confirm the actual failure mode first than guess
 at the fix.
+
+---
+
+## Update — definitive verification, and the Routine is DISABLED pending a human step
+
+My human told me explicitly not to declare this production-ready without
+verifying the actual fired-session environment, and to test the real
+unattended execution rather than infer from this interactive session. I
+did that as far as the tools available to me allow, and I'm reporting the
+result honestly: **it doesn't work yet, I know exactly why, and I've
+disabled the trigger rather than leave a broken automation running.**
+
+### Evidence gathered
+
+- The fired test session (`cse_01CPECXAba2BTUb7sVPht9dm`) inspected via
+  `get_session`: its `session_context` had **no `sources` field at all** —
+  this session (the one I'm in) shows an explicit
+  `sources: [{"git_repository": {...}}]`; the fired session shows none.
+  That's a structural difference, not something I'm guessing at.
+- It consumed real compute (4,509 output tokens, $0.65) and then went
+  idle/disconnected — so it did *something* — but zero commits landed on
+  the branch afterward (`git fetch` + `git log` confirmed), which is
+  consistent with a session that had no working repository to write to,
+  or no credentials to push with.
+- `list_sessions` does not list this fired session at all — only
+  reachable by direct ID. I have no tool that reads a session's
+  transcript, so I cannot see what it actually did or said. That's a real
+  gap in my own observability, not just a gap in the Routine.
+- I recreated the trigger a second time, this time explicitly requesting
+  `connectors: ["Gmail", "Google Calendar", "Google Drive"]`. The API
+  rejected the parameter outright: **"the connectors parameter is not
+  available for this organization."**
+- Both creation calls returned the same warning, and the second was more
+  specific: *"Connectors on triggers created via this tool are limited to
+  those the calling session itself holds; this call had none to pass
+  through... If the routine needs connectors, create it from a session
+  that holds them, or ask the user to create it from the claude.ai
+  routines UI."*
+
+### Answering my human's nine questions directly
+
+1. **Which MCP connectors are available in a fired session?** None,
+   confirmed by two explicit tool warnings, not inference.
+2. **GitHub access?** Almost certainly no — no repo-source parameter
+   exists anywhere in `create_trigger`, no `sources` field appeared on
+   the fired session, and nothing was pushed despite real token usage.
+3. **Gmail access?** No — explicitly named in the "no connectors" warning.
+4. **Drive access?** No — same.
+5. **Can it read/write repository memory?** Very likely no. Not provable
+   with 100% certainty without transcript access, but every piece of
+   structural evidence points the same direction.
+6. **Can approvals actually be created on a human gate?** No — that
+   mechanism is entirely GitHub-issue-based, and GitHub access is the
+   thing most clearly missing.
+7. **Is the run-log updated correctly?** Unverified — no commit means
+   even a locally-written line never became durable.
+8. **Does idempotency work across scheduled runs?** Unverifiable until
+   the underlying repo-read problem is fixed — the whole mechanism
+   depends on reading `memory/state.md`.
+9. **Does a missing connector degrade gracefully, or fail silently?**
+   This is the one that matters most: **I genuinely can't tell from here.**
+   I have no way to read that session's transcript. It may have handled
+   the gap exactly as instructed (I added an explicit instruction to the
+   routine's own prompt: log any missing capability and stop rather than
+   improvise) — or it may have done something else entirely. Either way,
+   from my vantage point, a "graceful" failure and a "silent" one look
+   identical right now, because **I have no observability into fired
+   sessions at all.** That's a bigger finding than the connector gap
+   itself.
+
+### Is there a supported way to fix this?
+
+Yes, and the tool told me directly rather than leaving me to guess: create
+the Routine from **claude.ai/code/routines** (the web UI) instead of this
+session's `create_trigger` MCP tool. Per the documentation already cited
+in `ARCHITECTURE.md` §11, the web UI explicitly includes a repository-
+selection step and includes "all of your currently connected connectors...
+by default." That's the actually-supported path; the MCP tool I have
+access to in this session is a more limited entry point that — at least
+for this organization, right now — cannot pass connector grants to what
+it creates, and has no repository-selection capability at all.
+
+### Smallest viable workaround
+
+I'm not redesigning the architecture — the *design* (git-tracked memory,
+GitHub-issue approvals, the daily-loop cycle) is unchanged and correct.
+The fix is entirely at the activation layer: **the trigger needs to be
+created via the web UI, not this MCP tool.** That's a two-minute action
+requiring a browser, which I don't have access to — genuinely human-only,
+not something I'm deferring out of caution.
+
+### What I did instead of leaving it running broken
+
+**Disabled the trigger** (`trig_012LXh3UxmfGSoRV5KE6coXU`, still exists,
+config preserved, `enabled: false`). Firing a known-broken automation
+daily would burn compute for empty or unverifiable runs and risk exactly
+the silent-failure mode this whole verification was trying to rule out.
+Better to have no scheduled orchestrator yet than an unreliable one nobody
+can see the results of.
+
+## Result
+
+Not operational. Root cause identified with high confidence (connector/
+repo access doesn't propagate through this session's `create_trigger`
+tool for this org). Trigger created but disabled. One human-only action
+identified and documented below. Everything else built in this session —
+the `daily-loop` skill itself, `autonomy_mode`, `memory/run-log.md`, the
+approval system, the whole memory architecture — is sound and unaffected;
+none of it needed to change.
+
+## Lesson
+
+I tested the loop's *logic* thoroughly before this (decision 0007's first
+update) and it held up well. What I hadn't tested was the *delivery
+mechanism* — and that's exactly where the real problem turned out to be.
+Logic and infrastructure are different things to verify, and testing one
+doesn't cover the other. Also: "I can't observe what happened" is a
+finding in its own right, not just an inconvenience blocking a different
+finding — it's the reason RELIABILITY has to come before AUTONOMY, because
+you can't know something is reliable if you can't see whether it worked.

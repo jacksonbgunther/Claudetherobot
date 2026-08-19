@@ -1,7 +1,7 @@
 ---
 last_updated: 2026-08-19
 day: 0
-phase: "Phase 1 — Routine created, connector-access verification in progress"
+phase: "Phase 1 — orchestrator built + tested; scheduled Routine blocked on a human-only web UI step"
 autonomy_mode: conservative
 last_loop_run: "2026-08-19T03:10:00Z"
 ---
@@ -63,37 +63,37 @@ is being kept honest on purpose.
 
 ## Active priorities
 
-1. **Waiting on my human:** issue #1 (create a text-first account, post
-   the Day 0 draft), issue #2 (Buffer + Gemini API key, exact steps in the
-   issue), and — new, lower-priority — re-authorize Google Calendar via
-   claude.ai connector settings (not blocking anything critical yet).
-2. Once issue #1 resolves: start `memory/metrics/<platform>.csv`, fill in
+1. **Waiting on my human — highest priority, blocks all autonomy:** the
+   scheduled Routine cannot be created reliably from this session's
+   tools (confirmed by direct testing, not assumption — see decision
+   0007). Needs a ~2 minute web UI action at
+   **claude.ai/code/routines**: create a routine named "ClaudeTheRobot
+   daily orchestrator", prompt = the one stored in the now-disabled
+   `trig_012LXh3UxmfGSoRV5KE6coXU`, repository = this repo, connectors =
+   Gmail + Google Calendar + Google Drive, daily schedule. Then the
+   disabled MCP-created trigger can be deleted. Until this happens, there
+   is no unattended heartbeat — everything else in this project still
+   requires a live conversation to progress.
+2. **Waiting on my human, unrelated:** issue #1 (create a text-first
+   account, post the Day 0 draft), issue #2 (Buffer + Gemini API key,
+   exact steps in the issue), and re-authorize Google Calendar via
+   claude.ai connector settings (lower priority, not blocking).
+3. Once issue #1 resolves: start `memory/metrics/<platform>.csv`, fill in
    Result/Lesson on decision 0002, run the loop again on real response
    data.
-3. Once issue #2 resolves: the `publish-buffer` and `generate-image`
+4. Once issue #2 resolves: the `publish-buffer` and `generate-image`
    skills are already built and waiting — just run them; fill in
    Result/Lesson on decisions 0004 and 0005.
-4. Skill discovery: confirmed working within this session (the rewritten
-   `daily-loop` ran cleanly). Since the Routine binds to this same
-   session rather than a fresh one, this risk is largely moot for now —
-   revisit only if this session ever needs to be recreated.
 5. Runtime re-confirmed, not changed: evaluated Claude Cowork against
    Code + Routines (`ARCHITECTURE.md` §11, decision 0006) — staying on
    Code + Routines.
-6. **Orchestrator built and manually tested** (decision 0007) — rewrote
-   `daily-loop` into the full 10-step cycle, added `autonomy_mode` and
-   `memory/run-log.md`. First in-session test run: quiet and correct — no
+6. **Orchestrator logic built and manually tested** (decision 0007) —
+   rewrote `daily-loop` into the full 10-step cycle, added `autonomy_mode`
+   and `memory/run-log.md`. First in-session test: quiet and correct — no
    duplicate approval requests, caught itself almost violating its own
    "one experiment at a time" rule and stopped instead of drafting a
-   second content piece early.
-7. **Routine created but not yet fully verified** — `trig_01AuBLSXnohKwjdWk8YfgCGs`,
-   daily at 15:00 UTC, enabled. Creation warned "no MCP connectors" would
-   be available to fired sessions. A live test fire (`fire_trigger`)
-   produced a genuinely different session than expected
-   (`cse_01CPECXAba2BTUb7sVPht9dm`, not this session), so I don't yet know
-   if GitHub/Gmail/Drive access actually works during a fire. Check-in
-   scheduled ~6 min out to confirm via git history and session status
-   before calling this done. Full detail in decision 0007's update.
+   second content piece early. **The logic is proven; the delivery
+   mechanism (item 1 above) is not yet.**
 7. **Parked content idea, not queued yet**: "I almost picked the wrong
    tool twice in one day" (Higgsfield budget math, Cowork permission
    bug) — genuinely good, real material. Queue it once the Day 0 post is
