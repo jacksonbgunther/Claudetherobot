@@ -436,6 +436,45 @@ direct, explicit platform rejection rather than assumption. Not yet safe
 to activate as-is. One unexplained connector flagged for confirmation,
 not treated as a problem.
 
+---
+
+## Update — the fix landed, one open safety question remains
+
+My human made the prompt edit himself and confirmed it. I re-pulled the
+stored config rather than taking his word for "done" at face value:
+
+- The prompt now genuinely starts with the branch-pin and `Skill`-tool
+  fallback paragraph, word for word what I'd drafted. Confirmed from the
+  live trigger config, not from memory of what I asked for.
+- The platform still shows a freshly pre-allocated placeholder branch
+  name in `outcomes` (now `claude/sweet-cori`, different from the
+  `claude/intelligent-cray` shown before the edit) — I read this as an
+  internal default slot the platform reserves regardless of prompt
+  content, not evidence the fix failed. Per Anthropic's own docs, a
+  direct push to an explicitly-named `claude/`-prefixed branch is
+  "always accepted," and the prompt now explicitly names ours. I can't
+  fully prove this holds until the first real fire actually commits
+  somewhere and I can check which branch it landed on — flagging that as
+  the one thing still resting on inference rather than direct evidence.
+- Deleted the old MCP-created trigger (`trig_012LXh3UxmfGSoRV5KE6coXU`) —
+  clean now, one routine, not two.
+
+**On the unrecognized `visualize` (`imagine_mcp`) connector:** my human
+doesn't know what it is either. I searched the MCP registry for
+"visualize," "imagine," and "image generation" — nothing matches it. It's
+not a listed, discoverable connector; the URL
+(`sandbox.claudemcpcontent.com/imagine_mcp`) reads like an internal or
+preview service, not something either of us deliberately added. I'm not
+going to invoke it, and I'm recommending it get removed before this
+routine starts running unattended — not because I have evidence it's
+harmful, but because "attached to a daily, unattended, real-money-adjacent
+agent" and "neither of us can explain what it does" shouldn't coexist by
+default. This is exactly the kind of thing Constitution's tool-use
+principle already covers: use a tool because it demonstrably helps, not
+because it's sitting there available. That said, this is a judgment call
+for my human to make, not something I'm blocking on — I'm not aware of a
+concrete risk, only an unexplained one.
+
 ## Lesson (continued)
 
 The MCP-tool path's failure earlier was "no access at all" — loud and
@@ -449,3 +488,19 @@ yesterday's work. A working-looking system that's silently wrong is worse
 than one that's visibly broken, and it took actually reading the stored
 config field by field, not just checking "does it have connectors," to
 catch it.
+
+---
+
+## Current status (2026-08-19, end of day)
+
+Trigger `trig_013dbqbD6yheGjBcFuKRNyq7` — connectors confirmed attached,
+repo access confirmed attached, prompt fix confirmed applied, duplicate
+old trigger deleted. One open recommendation (remove the unidentified
+`visualize` connector) left to my human's judgment, not a hard blocker.
+One thing left resting on inference rather than direct proof: whether the
+branch-pin instruction actually holds on a real fire. I'm not marking this
+`status: resolved` yet — that happens once the first real scheduled fire
+(next: 2026-08-20 ~15:00 UTC) actually lands a commit on
+`claude/project-documentation-files-0u53ue` and I can confirm it in
+`memory/run-log.md` and git history. That's the actual test; everything
+before it is preparation.

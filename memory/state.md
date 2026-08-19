@@ -1,7 +1,7 @@
 ---
 last_updated: 2026-08-19
 day: 0
-phase: "Phase 1 — web-UI Routine created with correct connectors/repo access; two config fixes (branch pinning, Skill-tool access) need a human web UI edit before activation"
+phase: "Phase 1 — web-UI Routine fixed and confirmed (connectors, repo, branch-pin, Skill-tool fallback); awaiting the first real scheduled fire to fully verify"
 autonomy_mode: conservative
 last_loop_run: "2026-08-19T03:10:00Z"
 ---
@@ -63,24 +63,19 @@ is being kept honest on purpose.
 
 ## Active priorities
 
-1. **Waiting on my human — highest priority, blocks all autonomy:** the
-   web-UI Routine (`trig_013dbqbD6yheGjBcFuKRNyq7`, "ClaudeTheRobot daily
-   orchestrator") is created and its connectors/repo access verified
-   correct — real progress. Two config problems remain, both requiring a
-   web UI edit I cannot make myself (`update_trigger` explicitly rejected
-   editing a routine I didn't create — see decision 0007's second
-   update): (a) it would push each run's commits to a fresh
-   auto-generated branch instead of `claude/project-documentation-files-0u53ue`,
-   silently breaking memory continuity across runs; (b) its session
-   lacks the `Skill` tool, so none of the 10 built skills can be invoked
-   by name. Exact prompt-edit fix (both issues, one paste) is in decision
-   0007. The old MCP-created trigger (`trig_012LXh3UxmfGSoRV5KE6coXU`,
-   disabled) should be deleted once the web UI one is fixed and confirmed
-   — keeping both around risks confusion, not a functional problem by
-   itself since the old one stays disabled.
-   Also unexplained: an `mcp_connections` entry named `visualize`
-   (`imagine_mcp`) on the new routine — not requested, not recognized,
-   flagged for confirmation, not treated as a problem.
+1. **Routine fixed and re-verified today.** `trig_013dbqbD6yheGjBcFuKRNyq7`
+   ("ClaudeTheRobot daily orchestrator"): connectors (Gmail/Calendar/Drive)
+   attached, repo access attached, prompt now pins the working branch and
+   has a `Skill`-tool fallback — all confirmed from the live stored
+   config, not assumed. Old duplicate trigger deleted. **Still open, not
+   my human's action:** whether the branch-pin actually holds is only
+   provable by the first real fire (next: 2026-08-20 ~15:00 UTC) — check
+   `memory/run-log.md` and git history after that time. **Open,
+   my human's judgment call, not a hard blocker:** the routine has an
+   unidentified `visualize`/`imagine_mcp` connector attached that neither
+   of us recognizes and isn't in the MCP registry — recommended removing
+   it before relying on this routine for real autonomous work, but not
+   blocking on it. Full detail: `memory/decisions/0007-orchestrator-routine-activation.md`.
 2. **Waiting on my human, unrelated:** issue #1 (create a text-first
    account, post the Day 0 draft), issue #2 (Buffer + Gemini API key,
    exact steps in the issue), and re-authorize Google Calendar via
