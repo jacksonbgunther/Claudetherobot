@@ -1,6 +1,6 @@
 ---
 date: 2026-08-19
-status: resolved
+status: open
 category: technical
 ---
 
@@ -325,3 +325,127 @@ doesn't cover the other. Also: "I can't observe what happened" is a
 finding in its own right, not just an inconvenience blocking a different
 finding — it's the reason RELIABILITY has to come before AUTONOMY, because
 you can't know something is reliable if you can't see whether it worked.
+
+---
+
+## Update — my human created the Routine via the web UI; verified its config, found two real fixes, hit a hard platform wall trying to apply them myself
+
+He asked me to verify the actual configuration before activating it, not
+infer from this session. I pulled the real config with `list_triggers`
+and checked it point by point instead of assuming the web UI got
+everything right by default.
+
+### What's genuinely good about it
+
+- `mcp_connections` shows Gmail, Google-Calendar, and Google-Drive all
+  actually attached — this is the real fix for the connector gap the
+  MCP-tool path couldn't deliver. Confirmed from the trigger's own stored
+  config, not assumed.
+- `sources` includes the git repository — repo access should work, unlike
+  the disabled trigger.
+- It's fresh-session-per-fire (no `persistent_session_id` on this one,
+  unlike my disabled one) — actually a better pattern than what I set up
+  myself: stateless compute, durable state entirely in the repo, exactly
+  what `ARCHITECTURE.md` §2 described as the alternative model. I hadn't
+  chosen it because I defaulted to "fire into this session"; the web UI
+  defaulted to the cleaner option.
+- Push notifications on completion: enabled. Cron: daily at 15:00 UTC, as
+  planned.
+- I checked something I'd assumed rather than verified earlier: whether
+  this repo even has a separate `main` branch that a fresh clone would
+  land on instead of our working branch. It doesn't —
+  `claude/project-documentation-files-0u53ue` *is* the repo's default
+  branch (`git ls-remote --symref origin HEAD` confirms it directly). So
+  a fresh clone lands exactly where our content actually is. Good thing
+  to have checked instead of assumed; it could easily have gone the other
+  way.
+
+### What's actually wrong
+
+1. **It would fragment memory across runs.** The trigger's `outcomes`
+   field shows the platform has pre-allocated a *new* branch name,
+   `claude/intelligent-cray`, for this routine's future commits. Routine
+   sessions push to a fresh `claude/`-prefixed branch by default unless
+   told otherwise. If left as-is: run 1 writes today's journal/state/
+   ledger updates to `claude/intelligent-cray`; run 2 clones fresh from
+   the *default* branch again (which never got run 1's updates, since
+   that branch never got merged) — so run 2 starts from yesterday's state
+   as if run 1 never happened. The entire "repo is durable memory across
+   runs" design depends on every run writing to the same branch. This
+   isn't hypothetical; it's what the stored config will do on first fire.
+2. **The session's `allowed_tools` doesn't include `Skill`.** Only Bash,
+   Read, Write, Edit, Glob, Grep, WebFetch, WebSearch. Every one of the
+   10 skills I built — `daily-loop` included — is invoked through the
+   `Skill` tool. Without it, none of them can be called by name; the
+   fired session would have to reconstruct the whole procedure from
+   scratch, using only the prompt's own paraphrase of the loop instead of
+   the actual, maintained skill files. That's a real drift risk: I'll
+   keep improving `daily-loop/SKILL.md`, and none of those improvements
+   would ever reach a routine that can't read it as a skill.
+
+### Trying to fix these myself, and the wall I hit
+
+Both are fixable with a prompt edit — I drafted one that explicitly pins
+the branch (`claude/project-documentation-files-0u53ue` is already
+`claude/`-prefixed, so per Anthropic's own docs a direct push to it is
+"always accepted") and tells the session to `Read` skill files directly
+if the `Skill` tool isn't available, treating the files as the source of
+truth rather than the prompt's summary.
+
+I called `update_trigger` to apply it. It was rejected outright:
+
+> "this routine was created via 'http_api', not by an agent. Agents can
+> only update routines they created (via create_trigger). A routine's own
+> session may still disable itself (enabled=false only)."
+
+That's a clean, deliberate platform boundary, not a bug — I can disable a
+routine (including this one, if needed) but I cannot edit one I didn't
+create, regardless of which account owns it or which repo it's for. So
+this genuinely needs my human, not because I didn't try, but because the
+platform itself draws the line there.
+
+### Smallest viable fix (for my human, in the web UI)
+
+Open the routine at claude.ai/code/routines, edit the prompt, and add
+this near the top, before the numbered steps:
+
+> Commit and push directly to `claude/project-documentation-files-0u53ue`
+> — do not let a new branch get created for these commits. If the `Skill`
+> tool isn't available in this session, read `.claude/skills/<name>/SKILL.md`
+> directly instead of invoking it by name; the skill files are the source
+> of truth, this prompt is a paraphrase.
+
+Everything else in the current prompt is accurate and doesn't need to
+change.
+
+### One more thing worth asking about, not fixing
+
+`mcp_connections` also includes a connector named `visualize`
+(`sandbox.claudemcpcontent.com/imagine_mcp`) that I didn't request and
+don't recognize from anything in `TOOL_STACK.md`. It sounds image-
+generation-related — possibly relevant to the `generate-image` skill,
+possibly something unrelated the account already had connected. Not
+touching it or assuming what it is; flagging it for my human to confirm.
+
+## Result
+
+Config verified against the real stored trigger, not inferred. Two real,
+specific problems found (branch fragmentation, missing `Skill` tool
+access), both with a known fix, neither fixable by me — confirmed by a
+direct, explicit platform rejection rather than assumption. Not yet safe
+to activate as-is. One unexplained connector flagged for confirmation,
+not treated as a problem.
+
+## Lesson (continued)
+
+The MCP-tool path's failure earlier was "no access at all" — loud and
+easy to diagnose from the outside (no commits, explicit warnings). This
+one is quieter and more dangerous in exactly the way my human's
+reliability-before-autonomy framing was worried about: the routine would
+*appear* to work — it has real connectors, real repo access, it would
+commit, push, and notify — while slowly losing memory continuity every
+run because each one starts from a branch that never accumulates
+yesterday's work. A working-looking system that's silently wrong is worse
+than one that's visibly broken, and it took actually reading the stored
+config field by field, not just checking "does it have connectors," to
+catch it.

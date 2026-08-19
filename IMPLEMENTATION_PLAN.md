@@ -42,21 +42,35 @@ timer.
 | Run `daily-loop` manually once, review output for voice/correctness | Yes | ✅ |
 | Fix any rough edges in the seeded skills based on that run | Yes | ✅ |
 | Create the orchestrator session (persistent) | Yes | ✅ (this session — see `ARCHITECTURE.md` §11/decision 0007) |
-| Create the daily Routine (`create_trigger`, cron) waking the orchestrator | Yes | 🔴 **blocked** — trigger created but disabled; MCP-tool-created triggers can't get connector/repo access for this org. See below. |
+| Create the daily Routine (`create_trigger`, cron) waking the orchestrator | Yes, then human-verified | 🟡 **created via web UI, not yet activated** — connectors/repo access confirmed correct; two config fixes needed first. See below. |
 | Human confirms they're getting/checking notifications from `PushNotification` and GitHub issues | No — human must confirm they see them | ⏳ |
 
-**Blocked, human-only step (new, Day 0):** the scheduled Routine cannot be
-reliably created via this session's tools — confirmed by direct testing,
-not assumption (`memory/decisions/0007-orchestrator-routine-activation.md`
-has the full verification against 9 specific checks). The supported fix:
-create the Routine from **claude.ai/code/routines** (the web UI), which
-explicitly supports repository selection and includes connected
-connectors by default. Suggested config: name "ClaudeTheRobot daily
-orchestrator", prompt = the one in the disabled trigger
-(`trig_012LXh3UxmfGSoRV5KE6coXU`, still viewable/editable), repository =
-this repo, connectors = Gmail + Google Calendar + Google Drive, schedule =
-daily. Once created there, the MCP-created disabled trigger can be
-deleted to avoid confusion.
+**Resolved:** the MCP-tool path (`create_trigger` from this session)
+couldn't get connector/repo access for this org — see the first update in
+`memory/decisions/0007-orchestrator-routine-activation.md`. My human
+created the Routine via **claude.ai/code/routines** (the web UI) instead,
+as the tool itself recommended. `trig_013dbqbD6yheGjBcFuKRNyq7` now shows
+Gmail, Google Calendar, and Google Drive genuinely attached, plus real
+repository access — verified from the stored config, not assumed.
+
+**Still blocked, human-only step (updated):** two config problems found by
+reading that stored config carefully, both requiring a web UI edit I
+cannot make myself (`update_trigger` explicitly refuses to edit a routine
+it didn't create — confirmed by the platform, not a workaround-able
+limit):
+1. It's pre-allocated a fresh branch (`claude/intelligent-cray`) for its
+   commits instead of `claude/project-documentation-files-0u53ue` — left
+   as-is, every run's memory updates would silently fail to reach the
+   next run's fresh clone.
+2. Its session lacks the `Skill` tool, so none of the 10 built skills
+   (including `daily-loop` itself) can be invoked by name.
+
+Exact fix (one prompt edit, both issues) is in decision 0007's second
+update — a short paragraph to paste in at claude.ai/code/routines. Once
+applied and confirmed, delete the old disabled MCP-created trigger
+(`trig_012LXh3UxmfGSoRV5KE6coXU`) to avoid having two. Also flagged, not
+yet understood: the new routine has an unrequested `visualize`
+(`imagine_mcp`) connector attached — needs my human to confirm what it is.
 
 Exit condition: the loop runs unattended for a few cycles and produces
 journal entries + state updates a human would actually want to read.
