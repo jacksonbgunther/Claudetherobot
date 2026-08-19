@@ -68,8 +68,9 @@ Phase 1; what's genuinely still gated on Phase 2 is *asset generation*
 |---|---|---|
 | `content-ideation` and `content-packaging` skills (script + shot list + caption + platform spec, no asset generation) | Yes | ⬜ |
 | Human reviews first few packages for voice/quality fit | No | ⏳ |
-| Decide & connect a media-generation tool (Higgsfield is already visible as a connector but not authorized; evaluate it, or an alternative, against actual output quality and cost) | No — requires the human to authorize/connect the tool and confirm budget for any paid tier | ⏳ |
-| Once connected: `generate-asset` skill wrapping that tool, gated through `update-ledger`/`request-approval` if it costs money | Yes, once the tool exists | ⬜ |
+| Tool research completed (Day 0, second loop) — see `TOOL_STACK.md` and `memory/decisions/0004-tool-stack-strategy.md`. Recommendation: skip Higgsfield/Runway for now (cost/access), use a pay-as-you-go image API + Shotstack + ElevenLabs free tier instead | Yes — research is done | ✅ |
+| Human authorizes/sets up the recommended Tier 1/2 tools (Buffer, a Gemini/image-gen API key, optionally Shotstack + ElevenLabs) | No — needs real signups/API keys | ⏳ (see open approval request) |
+| Once connected: `generate-asset` skill wrapping the image/video pipeline, gated through `update-ledger`/`request-approval` for any real spend | Yes, once keys exist | ⬜ |
 
 ---
 
@@ -94,18 +95,18 @@ records and analyzes.
 Goal: shrink the "human manually uploads everything" step, which is the
 single biggest constraint on true 24/7 autonomy (see `ARCHITECTURE.md` §8).
 
-Options to evaluate, roughly cheapest/fastest first:
+*Update, Day 0:* research completed ahead of schedule (`TOOL_STACK.md`,
+`memory/decisions/0004-tool-stack-strategy.md`) — this doesn't need to wait
+for Phase 4 to start evaluating, since the leading option turned out to be
+free.
 
-| Option | Automatable once set up | Human setup required |
-|---|---|---|
-| Third-party scheduler with an API (e.g., Buffer, Later, Ayrshare) | Yes — one API key to wrap in a skill | Yes — account creation, possibly paid tier, connecting each platform account through their OAuth flow |
-| Direct platform APIs (Meta Graph API for Instagram, TikTok Content Posting API, YouTube Data API) | Yes, per platform, once authorized | Yes, and heavier — developer account, app review, business verification; varies a lot by platform and can take weeks |
-| Stay human-executed indefinitely for some platforms | N/A | This is a legitimate fallback, not a failure — Const. §6 already treats "my human" as the physical-world interface |
-
-Decision on which path(s) to pursue is explicitly deferred to when this
-phase starts — it depends on which platforms are actually working by then,
-and is a human call (new accounts, possibly new cost) more than a technical
-one.
+| Option | Automatable once set up | Human setup required | Status |
+|---|---|---|---|
+| **Buffer** (free tier, REST API + hosted MCP) | Yes — one API key/MCP connection | Free signup + OAuth-link each platform account | 🟡 Recommended first move — awaiting authorization |
+| YouTube Data API v3 (direct) | Yes | Free Google Cloud API key, no business verification | 🟡 Recommended alongside Buffer — genuinely easy |
+| Direct platform APIs for IG/TikTok (Meta Graph API, TikTok Content Posting API) | Yes, per platform, once authorized | Heavy: developer account, app review, business verification, 2-6 weeks | 🔴 Deferred — Buffer covers these platforms without the audit |
+| Postiz (self-hosted) | Yes | Free, but requires hosting a small always-on service | 🔴 Deferred — fallback if Buffer's free-tier limits bind |
+| Stay human-executed indefinitely for some platforms | N/A | This is a legitimate fallback, not a failure — Const. §6 already treats "my human" as the physical-world interface | Available anytime |
 
 ---
 

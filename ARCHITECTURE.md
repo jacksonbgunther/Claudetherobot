@@ -334,14 +334,20 @@ constraints) → **Human review queue** → **Publish** (human-executed, see
 §7) → **Metrics capture** (human-reported or, later, API-pulled) back into
 `memory/metrics/`.
 
-**On media generation:** a connector named "Higgsfield" (AI image/video
-generation) is visible in this account's connector list but is not
-currently connected/authorized (`enabledInChat: false`, `installState:
-unknown`). Nothing in the content pipeline should assume it works until the
-human connects it and Claude has confirmed a real call succeeds. Until
-then, the pipeline stops at "packaged script + shot list + caption,"
-handed to the human for asset creation — a text-only content package is
-still a real, useful output, not a stub.
+**On media generation:** superseded by real research — see `TOOL_STACK.md`
+and `memory/decisions/0004-tool-stack-strategy.md`. Short version: a
+connector named "Higgsfield" is visible in this account's connector list
+but was evaluated, not assumed, and is *not* recommended yet — its
+cheapest real-use tier ($15/mo) is a meaningful slice of the entire $100
+starting budget for a recurring subscription. The recommended path is a
+pay-as-you-go stack instead: cheap per-image generation (~$0.02/image,
+e.g. Imagen 4 Fast or Flux) plus Shotstack for JSON-driven assembly
+(~$0.30/min) plus ElevenLabs' free tier for voice if narrated content is
+pursued. None of this is connected yet — it's a recommendation awaiting
+human authorization. Until something is actually connected, the pipeline
+stops at "packaged script + shot list + caption," handed to the human for
+asset creation — a text-only content package is still a real, useful
+output, not a stub.
 
 **Where packaged drafts live:** `content/queue/` holds packages awaiting
 approval/posting; `content/posted/` is the archive once something is
@@ -349,15 +355,20 @@ actually live (see `memory/decisions/0003-content-queue-directory.md` for
 why this isn't inside `memory/` — `memory/` is an audit trail of what
 happened, not a staging area for what's proposed).
 
-**On platform posting APIs:** Instagram, TikTok, YouTube Shorts, and
-Snapchat all require developer/business-verified accounts to post via API
-on someone's behalf, and that verification is a human-identity process
-Claude cannot self-provision. This is a hard external constraint, not a
-design choice — flagged here so it isn't rediscovered painfully later.
-Third-party schedulers (e.g., Buffer, Later, Ayrshare) can reduce this
-friction to "one API key" once the human sets one up; that's the fastest
-realistic path to automated posting and should be evaluated in Phase 4 of
-`IMPLEMENTATION_PLAN.md`.
+**On platform posting APIs:** Instagram, TikTok, and Snapchat all require
+developer/business-verified accounts to post via API on someone's behalf
+(2-6 week manual audits for Instagram and TikTok specifically), and that
+verification is a human-identity process Claude cannot self-provision.
+YouTube is the surprising exception — its Data API v3 is genuinely free
+and requires no business verification, just a Google Cloud API key. The
+fastest realistic path past the IG/TikTok friction isn't a direct API at
+all: **Buffer's free tier** has a real REST API and a hosted MCP server
+(`mcp.buffer.com/mcp`), and covers 11 channels including Instagram and
+TikTok without requiring Claude — or the human — to go through a platform
+audit. Full comparison and why it beats Ayrshare/Postiz/direct APIs for
+this stage is in `TOOL_STACK.md`. This should be evaluated ahead of
+schedule relative to the original Phase 4 plan, precisely because it turns
+out to be nearly free and nearly frictionless.
 
 ## 9. Analytics pipeline
 

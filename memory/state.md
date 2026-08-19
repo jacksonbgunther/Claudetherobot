@@ -16,33 +16,36 @@ history, see `memory/journal/` and `memory/decisions/`.
 
 ## Where things stand
 
-The repository foundation is built, and I've run the operating loop for
-real for the first time (see `memory/journal/2026-08-19.md`, "Later —
-first loop"). Concretely, today produced:
+The repository foundation is built, and I've run the operating loop twice
+today (see `memory/journal/2026-08-19.md`). Concretely, today produced:
 
 - A real content package — `content/queue/2026-08-19-day0-announcement.md`
   — ready to post, not just planned.
-- Two new decision records: content/platform direction
-  (`memory/decisions/0002-...`) and a fix to the architecture
-  (`memory/decisions/0003-...`, adding `content/queue/` and
-  `content/posted/`, since the original design never specified where a
-  draft actually lives).
-- A real, open approval request (GitHub issue #1 — see below).
+- Four decision records: content/platform direction (0002), a content-queue
+  architecture fix (0003), and a full tool-stack strategy (0004).
+- `TOOL_STACK.md` — a living, tiered evaluation of the real tool landscape
+  (publishing, media generation, analytics, trends), replacing earlier
+  assumptions. Headline finding: Buffer (free) solves publishing better
+  than expected; Higgsfield/Runway are explicitly *not* recommended yet on
+  cost/access grounds.
+- Two open, real approval requests (GitHub issues #1 and #2 — see below).
 
 Still genuinely true: no accounts exist, nothing has been posted, no money
-has moved beyond the starting $100, no relationships have been formed. The
-gap between "planned" and "happened" is being kept honest on purpose.
+has moved beyond the starting $100, no relationships have been formed, and
+nothing has been authorized yet. The gap between "planned" and "happened"
+is being kept honest on purpose.
 
 ## Active priorities
 
-1. **Waiting on my human:** approve/act on issue #1 — create a text-first
-   account (X and/or Threads) and post the Day 0 announcement.
-2. Once that post is live: start `memory/metrics/<platform>.csv`, fill in
-   the Result/Lesson on decision 0002, and run the loop again to analyze
-   whatever real response it got.
-3. Evaluate the Higgsfield connector (or an alternative) for media
-   generation — still relevant for the video-first platforms, not urgent
-   until there's more signal from the text-first experiment.
+1. **Waiting on my human:** issue #1 (create a text-first account, post
+   the Day 0 draft) and issue #2 (authorize Buffer + an image-gen API
+   key). Neither blocks the other — Buffer setup can start in parallel,
+   though it isn't useful until an account exists to link.
+2. Once issue #1 resolves: start `memory/metrics/<platform>.csv`, fill in
+   Result/Lesson on decision 0002, run the loop again on real response
+   data.
+3. Once issue #2 resolves: wire up the actual Buffer connection and a
+   first image-generation call; fill in Result/Lesson on decision 0004.
 4. Before scheduling the loop unattended: confirm skill discovery is
    reliable in a fresh session (it didn't show up in the Skill tool
    immediately after being created in this one — worked after a short
@@ -51,10 +54,13 @@ gap between "planned" and "happened" is being kept honest on purpose.
 
 ## Open approvals
 
-1 open — **issue #1**:
-https://github.com/jacksonbgunther/Claudetherobot/issues/1 — create an
-account, post the Day 0 announcement. Mirrored at
-`memory/approvals/pending/2026-08-19-post-day0-announcement.md`.
+2 open:
+- **Issue #1**: https://github.com/jacksonbgunther/Claudetherobot/issues/1
+  — create an account, post the Day 0 announcement.
+- **Issue #2**: https://github.com/jacksonbgunther/Claudetherobot/issues/2
+  — authorize Buffer + a Gemini/image-gen API key.
+
+Mirrored in `memory/approvals/pending/`.
 
 ## Platform accounts
 
