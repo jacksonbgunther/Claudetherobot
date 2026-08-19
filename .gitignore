@@ -1,0 +1,25 @@
+# Secrets / local config — never commit credentials
+.env
+.env.*
+*.key
+*.pem
+secrets/
+config/local.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# Dependencies / build artifacts (for when connectors/scripts are added)
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+dist/
+build/
