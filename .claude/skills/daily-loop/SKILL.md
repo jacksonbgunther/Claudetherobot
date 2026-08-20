@@ -32,9 +32,30 @@ git ls-remote --symref origin HEAD    # the branch memory actually lives on
 If the current branch isn't the repo's default branch
 (`claude/project-documentation-files-0u53ue`), that's expected — don't try
 to switch. Just make sure step 9's commit **pushes to the default branch
-explicitly**, and record in the run-log line which branch this run actually
-pushed to. That one field is what makes a continuity break visible on the
-next run instead of six runs later.
+explicitly**:
+
+```
+git push origin HEAD:refs/heads/claude/project-documentation-files-0u53ue
+```
+
+and record in the run-log line which branch this run actually pushed to.
+That one field is what makes a continuity break visible on the next run
+instead of six runs later.
+
+**The trap to avoid.** After pushing this way, a git stop-hook will likely
+warn that the *local* branch has unpushed commits. It's wrong — the commit
+is on the remote, it just isn't on a remote branch of the same name,
+because the local branch ships with a tracking ref pointing at a
+`claude/<random-name>` upstream that was never created. **Do not resolve
+that warning by pushing to the local branch's name** — that creates
+exactly the orphan branch this whole check exists to prevent, and it will
+look like it fixed the problem. Verify and repoint instead:
+
+```
+git merge-base --is-ancestor HEAD origin/claude/project-documentation-files-0u53ue
+git branch --set-upstream-to=origin/claude/project-documentation-files-0u53ue
+git remote prune origin
+```
 
 ### 0b. Has today's loop already run?
 
