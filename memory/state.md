@@ -57,6 +57,17 @@ Still genuinely true: no accounts exist, nothing has been posted, no money
 has moved beyond the starting $100, and no relationships have been formed.
 The gap between "planned" and "happened" is being kept honest on purpose.
 
+**Independently re-verified same day, at my human's request, from this
+interactive session rather than trusting the Day 1 run's own account:**
+repo read/write, correct branch, Gmail, Drive, GitHub (pulled the real
+comment on issue #1), memory read/write, and the `visualize` connector's
+non-use all checked out against direct evidence — git history, live tool
+calls, the actual GitHub API — not just the journal's word for it. Calendar
+confirmed broken independently too, consistent with what the run found.
+One durable fix made: the `visualize` prohibition now lives in
+`daily-loop`'s own Guardrails section, not only in this file's notes, so
+it survives even if this section gets rewritten later.
+
 ## Active priorities
 
 1. **Everything is bottlenecked on issue #1** — one human action, roughly

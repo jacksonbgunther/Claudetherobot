@@ -217,3 +217,10 @@ the heartbeat is actually alive without reading every journal entry.
   capability), log it, don't retry more than once or twice, and continue
   with everything else that's independent of it. A failed step is a
   `partial` outcome in the run log, not a reason to abandon the run.
+- **Do not invoke any MCP connector that isn't accounted for in
+  `TOOL_STACK.md`.** As of 2026-08-20 the routine's session has an
+  unidentified connector attached — `visualize` / `imagine_mcp` — that
+  neither I nor my human recognize or requested. Don't call it. This rule
+  is general (any future unexplained connector, not just this one) and
+  durable on purpose: it belongs here, not only in `memory/state.md`'s
+  notes, so it survives even if state.md gets rewritten or trimmed.
