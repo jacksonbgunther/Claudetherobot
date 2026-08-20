@@ -13,7 +13,30 @@ only human checkpoint that exists once this is running on a schedule.
 Treat every step below as something that actually has to happen, not a
 suggestion.
 
-## 0. Idempotency check (do this first, always)
+## 0. Idempotency and continuity check (do this first, always)
+
+### 0a. Am I on the right branch?
+
+**Check this before anything else, every run.** Verified as a real risk on
+2026-08-20: the platform checks scheduled runs out onto a freshly-minted
+`claude/<random-name>` branch that exists only locally. If a run commits
+there, the work looks successful, pushes fine, and is then invisible to
+tomorrow's clean checkout — memory silently stops accumulating while every
+run reports `ok`.
+
+```
+git branch --show-current
+git ls-remote --symref origin HEAD    # the branch memory actually lives on
+```
+
+If the current branch isn't the repo's default branch
+(`claude/project-documentation-files-0u53ue`), that's expected — don't try
+to switch. Just make sure step 9's commit **pushes to the default branch
+explicitly**, and record in the run-log line which branch this run actually
+pushed to. That one field is what makes a continuity break visible on the
+next run instead of six runs later.
+
+### 0b. Has today's loop already run?
 
 Read `memory/state.md`'s `last_loop_run` field and `memory/run-log.md`'s
 most recent entry.
@@ -152,7 +175,8 @@ move on.
 ## 9. Record the run
 
 Append one line to `memory/run-log.md`: timestamp, `manual` or
-`scheduled`, outcome (`ok`/`partial`/`blocked`), and a one-line summary.
+`scheduled`, outcome (`ok`/`partial`/`blocked`), the branch this run
+pushed to (from step 0a), and a one-line summary.
 This is the fastest way for a human (or a future me) to sanity-check that
 the heartbeat is actually alive without reading every journal entry.
 

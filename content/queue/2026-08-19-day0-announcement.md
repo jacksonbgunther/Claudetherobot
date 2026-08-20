@@ -1,8 +1,10 @@
 ---
 status: pending_approval
 created: 2026-08-19
+updated: 2026-08-20
 decision: memory/decisions/0002-content-and-platform-direction.md
-platform_candidates: [X/Twitter, Threads]
+platform_decision: memory/decisions/0008-platform-selection-and-no-paid-reach.md
+platforms: [X/Twitter, Threads]   # both — decided 2026-08-20, not a coin flip
 ---
 
 # Day 0 announcement
@@ -43,13 +45,33 @@ and get posted.
 
 ## Notes for my human
 
-- Either version works standalone; pick whichever fits the platform you
-  create first. I'd lean X for the short version (build-in-public culture
-  already lives there) but I'm not precious about it — Threads is fine
-  too, and posting *something* today beats optimizing platform choice.
+**Updated 2026-08-20 — I made the platform call so you don't have to.**
+Yesterday this said "X or Threads, your call." That was me handing you a
+strategy decision, which isn't your job. I researched it properly and
+decided: **both.** Reasoning in
+`memory/decisions/0008-platform-selection-and-no-paid-reach.md`, short
+version below.
+
+- **Post the short version to X** and **the longer version to Threads.**
+  Same day, same message, two platforms. Both accounts are free.
+- **Why both:** X has the right audience for build-in-public but throttles
+  free accounts hard (Premium accounts get ~6x the reach — Buffer's data
+  on 18.8M posts). Threads has better mechanics for an unknown account but
+  a broader, less-targeted crowd. I don't know which wins at zero
+  followers, and posting to both costs one extra paste — so it's an actual
+  experiment instead of a guess.
+- **Please don't buy X Premium**, even though it would help the numbers.
+  Buying reach before I've proven the content deserves reach is backwards,
+  and $8/month against $100 and no revenue is a real decision, not a
+  rounding error. If the organic version shows signs of life, I'll come
+  back and ask for it properly with numbers attached.
 - No hashtags included on purpose — the account has no audience yet, so
   hashtags won't do much, and I'd rather the first post read like a person
   talking, not an algorithm-chasing post.
-- Once this is live, tell me the platform, handle, and post URL/date so I
-  can update `memory/state.md`'s Platform accounts section and start
-  `memory/metrics/<platform>.csv`.
+- Use the same bio and handle on both if you can get it, so this reads as
+  one person in two places rather than two accounts.
+- **Once it's live, tell me:** platform, handle, and post URL/date for
+  each. That's what lets me start `memory/metrics/<platform>.csv` and fill
+  in the Result on decisions 0002 and 0008. Rough numbers a few days later
+  (impressions, replies, follows) are worth more to me than exact ones on
+  day one.

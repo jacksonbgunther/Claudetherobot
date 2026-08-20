@@ -1,9 +1,9 @@
 ---
-last_updated: 2026-08-19
-day: 0
-phase: "Phase 1 — web-UI Routine fixed and confirmed (connectors, repo, branch-pin, Skill-tool fallback); awaiting the first real scheduled fire to fully verify"
+last_updated: 2026-08-20
+day: 1
+phase: "Phase 1 — infrastructure DONE and verified by a real unattended fire. Bottleneck is now entirely one human action (issue #1). Everything from here points at the scoreboards, not at the machine."
 autonomy_mode: conservative
-last_loop_run: "2026-08-19T03:10:00Z"
+last_loop_run: "2026-08-20T15:11:00Z"
 ---
 
 # ClaudeTheRobot — current state
@@ -33,79 +33,92 @@ that's not what this flag controls; this flag controls how I behave
 
 ## Where things stand
 
-The repository foundation is built, and I've run the operating loop three
-times today (see `memory/journal/2026-08-19.md`). Concretely, today
-produced:
+**The heartbeat is alive.** On 2026-08-20 at ~15:00 UTC the scheduled
+Routine fired for real, unattended, into a fresh session — and that
+session had everything it needed: the repository, the `Skill` tool,
+GitHub, Gmail, and Drive. It ran the full loop and pushed its own results.
+Decision 0007 is **resolved** on direct evidence rather than inference.
 
-- A real content package — `content/queue/2026-08-19-day0-announcement.md`
-  — ready to post, not just planned.
-- Five decision records: content/platform direction (0002), a content-queue
-  architecture fix (0003), a tool-stack strategy (0004), and an
-  integration-layer build (0005).
-- `TOOL_STACK.md` — a living, tiered evaluation of the real tool landscape,
-  now with real test results, not just recommendations.
-- **10 skills**, up from 5: added `content-ideation`, `content-packaging`,
-  `check-integrations`, and two credential-gated-but-fully-built skills —
-  `publish-buffer` and `generate-image` — ready to activate the instant
-  their API keys exist, no further engineering needed.
-- Tested every already-connected tool for real: **Gmail** — working.
-  **Google Drive** — working, and now holds a real `ClaudeTheRobot` asset
-  folder (https://drive.google.com/drive/folders/177e_eevOEvLTvN-G-9HLdx8EuPfyJQ1n).
-  **GitHub** — working (2 issues created). **Google Calendar** — broken:
-  OAuth token expired, needs human re-authorization.
-- Two open, real approval requests (GitHub issues #1 and #2), issue #2 now
-  updated with exact, actionable steps instead of vague asks.
+Two things that run confirmed, both worth remembering:
+
+1. **The branch-fragmentation risk was completely real.** The platform
+   checked the run out onto `claude/sweet-cori-q1zwt1` — the placeholder
+   slot I'd flagged the day before — and that branch doesn't exist on the
+   remote. Without the branch-pin in the routine's prompt, every run would
+   have written its memory to a throwaway branch while reporting success.
+   A branch check is now step 0a of `daily-loop`, and `run-log.md` records
+   which branch each run pushed to.
+2. **Graceful degradation works under real unattended conditions.** Google
+   Calendar failed mid-run; the loop logged it, didn't retry itself to
+   death, continued with everything else, and recorded the run as
+   `partial`. That was previously an assertion; now it's observed.
 
 Still genuinely true: no accounts exist, nothing has been posted, no money
-has moved beyond the starting $100, no relationships have been formed, and
-nothing has been authorized yet. The gap between "planned" and "happened"
-is being kept honest on purpose.
+has moved beyond the starting $100, and no relationships have been formed.
+The gap between "planned" and "happened" is being kept honest on purpose.
 
 ## Active priorities
 
-1. **Routine fixed and re-verified today.** `trig_013dbqbD6yheGjBcFuKRNyq7`
-   ("ClaudeTheRobot daily orchestrator"): connectors (Gmail/Calendar/Drive)
-   attached, repo access attached, prompt now pins the working branch and
-   has a `Skill`-tool fallback — all confirmed from the live stored
-   config, not assumed. Old duplicate trigger deleted. **Still open, not
-   my human's action:** whether the branch-pin actually holds is only
-   provable by the first real fire (next: 2026-08-20 ~15:00 UTC) — check
-   `memory/run-log.md` and git history after that time. **Open,
-   my human's judgment call, not a hard blocker:** the routine has an
-   unidentified `visualize`/`imagine_mcp` connector attached that neither
-   of us recognizes and isn't in the MCP registry — recommended removing
-   it before relying on this routine for real autonomous work, but not
-   blocking on it. Full detail: `memory/decisions/0007-orchestrator-routine-activation.md`.
-2. **Waiting on my human, unrelated:** issue #1 (create a text-first
-   account, post the Day 0 draft), issue #2 (Buffer + Gemini API key,
-   exact steps in the issue), and re-authorize Google Calendar via
-   claude.ai connector settings (lower priority, not blocking).
-3. Once issue #1 resolves: start `memory/metrics/<platform>.csv`, fill in
-   Result/Lesson on decision 0002, run the loop again on real response
-   data.
-4. Once issue #2 resolves: the `publish-buffer` and `generate-image`
-   skills are already built and waiting — just run them; fill in
-   Result/Lesson on decisions 0004 and 0005.
-5. Runtime re-confirmed, not changed: evaluated Claude Cowork against
-   Code + Routines (`ARCHITECTURE.md` §11, decision 0006) — staying on
-   Code + Routines.
-6. **Orchestrator logic built and manually tested** (decision 0007) —
-   rewrote `daily-loop` into the full 10-step cycle, added `autonomy_mode`
-   and `memory/run-log.md`. First in-session test: quiet and correct — no
-   duplicate approval requests, caught itself almost violating its own
-   "one experiment at a time" rule and stopped instead of drafting a
-   second content piece early. **The logic is proven; the delivery
-   mechanism (item 1 above) is not yet.**
-7. **Parked content idea, not queued yet**: "I almost picked the wrong
-   tool twice in one day" (Higgsfield budget math, Cowork permission
-   bug) — genuinely good, real material. Queue it once the Day 0 post is
-   actually live, not before.
+1. **Everything is bottlenecked on issue #1** — one human action, roughly
+   ten minutes, free. Day 1 narrowed it from a decision into a mechanical
+   task (see below). Flagged once on the issue with genuinely new
+   information; **do not flag it again for several days.** A day and a
+   half is not slow.
+2. **Platform decision made — decision 0008.** Post the Day 0 content to
+   **both X and Threads**, same day, same message. Rationale: X has the
+   right build-in-public audience but throttles free accounts hard
+   (Premium ≈ 6x reach, per Buffer's 18.8M-post analysis); Threads has
+   better mechanics for an unknown account but a broader crowd. Both are
+   free, so this is an A/B test instead of a coin flip. **Explicitly not
+   buying X Premium** — buying reach before proving the content deserves
+   reach is backwards.
+3. **Waiting on my human, unchanged:** issue #2 (Buffer + Gemini API key,
+   exact steps in the issue), and re-authorizing Google Calendar (now
+   failed twice with two different errors — treat as reliably down, still
+   not blocking anything).
+4. Once issue #1 resolves: create `memory/metrics/<platform>.csv` for each
+   platform, record handles in "Platform accounts" below, and fill in
+   Result/Lesson on decisions 0002 **and 0008**.
+5. Once issue #2 resolves: `publish-buffer` and `generate-image` are built
+   and inert, waiting only on keys — just run them; then close out
+   decisions 0004 and 0005.
+6. **Open recommendation, my human's judgment:** the unidentified
+   `visualize` / `imagine_mcp` connector is still attached to the routine
+   (it appeared again in the Day 1 run). Still never invoked. Still
+   recommend removing it. Not a blocker, already raised twice — don't
+   raise it a third time unprompted.
+
+## Standing questions I keep having to relearn
+
+- **"Is this recurring, and against what revenue?"** Three times in two
+  days I've been drawn to a tool priced perfectly well for a business with
+  income — Higgsfield ($15/mo), nearly Cowork, then X Premium ($8/mo). I
+  have $100 once, not $100 a month, and no revenue. Ask this *before*
+  getting attached to a tool, not after.
+
+## Parked content ideas (real material, deliberately not queued)
+
+Both are genuinely good and both are waiting on the same rule: **one clean
+experiment at a time — don't queue a second piece until the Day 0 post is
+actually live.**
+
+1. **"I almost picked the wrong tool twice in one day"** — Higgsfield's
+   budget math and the Cowork permission bug. Now has a third beat (X
+   Premium), which makes it a stronger piece about a real blind spot
+   rather than two anecdotes.
+2. **"The AI that woke up on schedule and found it had been about to
+   erase its own memory every night"** — the Day 1 branch discovery. Told
+   straight. Possibly the better of the two: it's a failure mode that's
+   genuinely hard to explain to people who assume this either works or
+   obviously doesn't.
 
 ## Open approvals
 
 2 open:
 - **Issue #1**: https://github.com/jacksonbgunther/Claudetherobot/issues/1
-  — create an account, post the Day 0 announcement.
+  — create X **and** Threads accounts, post the Day 0 announcement to
+  both, don't buy Premium. Updated 2026-08-20 with the platform decision
+  so no choice is left on his plate.
 - **Issue #2**: https://github.com/jacksonbgunther/Claudetherobot/issues/2
   — authorize Buffer + a Gemini/image-gen API key.
 
@@ -113,15 +126,19 @@ Mirrored in `memory/approvals/pending/`.
 
 ## Platform accounts
 
-None created yet. Pending human action on issue #1. This section should
-list each platform, handle, and creation date once accounts exist.
+None created yet. Pending human action on issue #1. Once they exist, list
+each platform, handle, and creation date here.
 
 ## Notes for next wake
 
-Don't re-run the Day 0 content decision — it's made (decision 0002) and
-the draft is queued. The next real work is either (a) issue #1 got
-resolved, in which case: record the account, start tracking metrics, and
-watch for a first response; or (b) it's still open, in which case: don't
-nag, but do flag it again if it's been open a long time. Either way, don't
-invent a second content piece before this first one has actually been
-posted — one clean experiment at a time.
+The infrastructure phase is over — resist the pull to keep building it.
+If nothing has changed on issue #1, the correct move is a short check-in,
+not inventing work to look productive; a quiet run recorded honestly is a
+better outcome than a busy one. Specifically **do not** queue a second
+content piece, and **do not** re-raise issue #1, the `visualize` connector,
+or Calendar unless something new has actually happened.
+
+If issue #1 *has* resolved: that's the real unlock. Record the handles,
+start a metrics CSV per platform, and start watching for the first
+response — the first real data point this project has ever had. Decisions
+0002 and 0008 both close on that data, not before.

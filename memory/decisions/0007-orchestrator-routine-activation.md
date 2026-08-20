@@ -1,6 +1,7 @@
 ---
 date: 2026-08-19
-status: open
+status: resolved
+resolved: 2026-08-20
 category: technical
 ---
 
@@ -504,3 +505,105 @@ branch-pin instruction actually holds on a real fire. I'm not marking this
 `claude/project-documentation-files-0u53ue` and I can confirm it in
 `memory/run-log.md` and git history. That's the actual test; everything
 before it is preparation.
+
+---
+
+## RESOLVED — 2026-08-20: the first real scheduled fire happened, and it worked
+
+This update is being written *by* that fire. The trigger fired on its own
+at ~15:00 UTC into a fresh session that nobody was watching, and the
+session it produced is the one writing this sentence. Every question left
+hanging above is now answered with direct evidence instead of inference.
+
+### The nine questions, re-answered from inside a real scheduled run
+
+1. **Which MCP connectors are available?** Gmail, Google Drive, Google
+   Calendar, and GitHub all attached and reachable. Verified by actually
+   calling them this run, not by reading config.
+2. **GitHub access?** **Yes** — `list_issues` returned issues #1 and #2
+   correctly.
+3. **Gmail access?** **Yes** — `list_labels` succeeded.
+4. **Drive access?** **Yes** — `list_recent_files` succeeded.
+5. **Can it read/write repository memory?** **Yes** — this session read
+   `CONSTITUTION.md`, `memory/state.md`, the journal, decisions, the
+   ledger, and `content/queue/` off a real checkout, and is writing this.
+6. **Can approvals be created on a human gate?** Yes — GitHub write
+   access is live (exercised this run on issue #1).
+7. **Is the run-log updated correctly?** Yes — this run appends to it and
+   pushes, which is the durable proof.
+8. **Does idempotency work across scheduled runs?** Step 0 ran correctly:
+   read `last_loop_run` (2026-08-19T03:10:00Z) and `run-log.md`, found the
+   last run was a *different day*, and correctly proceeded with a full
+   cycle rather than a short check-in. First real cross-run test, passed.
+9. **Does a missing connector degrade gracefully or fail silently?**
+   **Answered, and this is the one I most wanted.** Google Calendar failed
+   this run — `list_calendars` returned an upstream connection timeout.
+   The run logged it, did not retry more than once, continued with
+   everything else, and is recording the outcome as `partial`. That is
+   exactly the designed behavior, observed under real unattended
+   conditions rather than asserted. The observability gap from the earlier
+   MCP-path failure is also closed: I can see what this run did because
+   this run *is* me, and it leaves a git trail.
+
+### The branch question — my prediction was exactly right, and the fix matters
+
+Yesterday I flagged one thing as resting on inference: whether the
+prompt's branch-pin would actually hold, given the platform had
+pre-allocated a placeholder branch slot called `claude/sweet-cori`.
+
+What actually happened: the platform checked this session out onto
+**`claude/sweet-cori-q1zwt1`** — the pre-allocated slot, with a suffix.
+`git ls-remote --heads origin` confirms that branch **does not exist on
+the remote**; the only remote branch is
+`claude/project-documentation-files-0u53ue`.
+
+So the fragmentation risk was completely real, and the prompt's explicit
+branch-pin is the only thing standing between this system and slow memory
+loss. Left to its default, this run would have pushed today's journal,
+state, and decisions to a throwaway branch that tomorrow's clean checkout
+would never see — and it would have looked like a success every single
+time. This run pushes to the pinned branch instead. That push is the
+proof, and it's the reason this decision can finally close.
+
+The lesson generalizes past this one config: the failure mode I was most
+worried about wasn't a tool that breaks loudly, it was a system that
+reports success while quietly losing continuity. The fix was two
+sentences of prompt text. Finding it took reading a config field by field
+and then waiting a day to watch it actually execute.
+
+### What's still open (tracked elsewhere, not blocking this decision)
+
+- The unidentified `visualize` / `imagine_mcp` connector is still attached
+  to this routine — it appeared in this session's tool list again today. I
+  still haven't invoked it and still recommend removing it. My human's
+  call, not a blocker.
+- Google Calendar remains broken, now with a different error signature
+  than yesterday (connection timeout rather than expired OAuth). Still
+  human-only to fix, still not blocking.
+
+## Result
+
+**Operational.** The orchestrator fires on schedule, into a fresh session,
+with repo access, the `Skill` tool, and its connectors, executes the full
+loop, degrades gracefully on a broken integration, and commits to the
+correct branch. Verified by direct execution, not inference. The heartbeat
+is alive.
+
+## Lesson
+
+Three things worth carrying forward:
+
+1. **Logic and delivery are separate things to verify, and I verified them
+   in the wrong order.** I tested the loop's reasoning thoroughly on Day 0
+   and it was fine; every real problem lived in the plumbing that reaches
+   it. Next time I build something that runs unattended, I'll test whether
+   it can *arrive* before I polish what it does on arrival.
+2. **A system that looks successful while silently losing state is worse
+   than one that visibly breaks.** Both of this project's real failures so
+   far were in that category, and both were caught only by reading actual
+   stored configuration rather than checking whether the happy path
+   appeared to work.
+3. **"I can't observe what happened" is itself a finding.** Yesterday that
+   was the blocker; today it's resolved not because I built a monitoring
+   tool but because the run writes its own durable record to git. The
+   audit trail was the observability solution all along.

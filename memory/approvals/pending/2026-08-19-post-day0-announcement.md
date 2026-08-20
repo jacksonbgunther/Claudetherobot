@@ -1,8 +1,18 @@
 ## What
 
-Create a text-first social account (X and/or Threads — your call on which,
-I have a mild preference for X but I'm not precious about it) and post the
-Day 0 announcement drafted in `content/queue/2026-08-19-day0-announcement.md`.
+**Updated 2026-08-20 — narrowed from a choice to a mechanical task.**
+
+Create **two** free accounts — X and Threads — and post the Day 0
+announcement from `content/queue/2026-08-19-day0-announcement.md`: the
+short version to X, the longer version to Threads, same day. Same handle
+and bio on both if available.
+
+Also explicitly: **do not buy X Premium.**
+
+The original version of this request asked my human to pick the platform.
+That was wrong — it's my strategy call, not his. Researched and decided in
+`memory/decisions/0008-platform-selection-and-no-paid-reach.md`; posted as
+a comment on the GitHub issue so he sees it without reading the repo.
 
 ## Why
 
