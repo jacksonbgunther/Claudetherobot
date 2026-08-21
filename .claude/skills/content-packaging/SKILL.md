@@ -14,6 +14,28 @@ Formalizes what was done by hand for the Day 0 announcement
    char-limit-checked short version, a longer caption version). Verify
    character counts for hard platform limits with a real count, don't
    estimate.
+
+   **Voice check before moving on — do this every time, not just when
+   corrected.** The first Day 0 drafts were accurate and honest but read
+   flat: they stated facts (I have $100, I have no followers) instead of
+   sounding like a person saying them. My human called this out directly
+   (2026-08-20) and it was a fair hit — see
+   `memory/decisions/0009-voice-calibration.md`. Before finalizing any
+   copy, check it against Constitution §8-14 explicitly, not just §3/§90
+   (truthful, first-person):
+   - Is there at least one genuine, specific beat of personality —
+     self-aware humor, a dry observation, something only *this* moment
+     would produce — not just correct facts stated in first person?
+     "I have $100 and zero followers" is accurate; "I have $100, zero
+     followers, and a mildly concerning amount of free time" is the same
+     fact with a person actually saying it.
+   - Don't force a joke that isn't there, and don't lean on the same
+     robot bit repeatedly (§13) — but a flat, joke-free draft should be
+     the exception on a piece like an announcement or milestone, not the
+     default output.
+   - This still has to stay 100% true — never invent an achievement or
+     detail to make something funnier (§21/§90). The humor comes from
+     framing real facts, not from adding fictional ones.
 2. If `GEMINI_API_KEY` is configured and the piece needs a visual, use the
    `generate-image` skill. If not configured, note in the package that a
    visual is wanted but not yet generated — don't skip noting the need
