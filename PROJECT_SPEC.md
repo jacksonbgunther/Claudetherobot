@@ -102,8 +102,10 @@ The foundation (this phase) is successful if:
    journal entry using the seeded skills, and those records are durable
    (git history) and legible to a human skimming the repo.
 3. Something requiring approval produces a real, visible artifact (a
-   GitHub issue + a pending-approval file) rather than silently happening
-   or silently stalling.
+   GitHub issue + a pending-approval file, and — as of 2026-08-21, for
+   publish/spend-type decisions — a Telegram message with tap-to-approve/
+   reject buttons, `memory/decisions/0011-telegram-approvals.md`) rather
+   than silently happening or silently stalling.
 4. Nothing in the repo lets Claude claim money was spent, content was
    posted, or a relationship was formed that didn't actually happen.
 

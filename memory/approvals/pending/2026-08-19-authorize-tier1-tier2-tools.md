@@ -1,3 +1,7 @@
+---
+action: human-manual
+---
+
 ## What
 
 Authorize and set up the Tier 1/2 tools recommended in `TOOL_STACK.md`:

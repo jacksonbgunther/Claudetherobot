@@ -81,6 +81,18 @@ re-flagged. $100.00 and 0 followers unchanged.
 
 ## Active priorities
 
+0. **New, 2026-08-21 — Telegram approvals built, needs 3 human setup
+   steps before it does anything.** `memory/decisions/0011-telegram-approvals.md`
+   has the full design and the mechanism verification behind it (why
+   polling, not a webhook — Routines can't receive inbound webhooks
+   without new relay infrastructure I wasn't asked to build). Needed:
+   (1) `TELEGRAM_BOT_TOKEN` + `TELEGRAM_CHAT_ID` as environment variables,
+   (2) `api.telegram.org` added to the Custom network allowlist,
+   (3) a second Routine, hourly, running `telegram-approval-poll` — exact
+   config on issue #3. A harmless test approval (issue #3, `action: test`)
+   is queued and will send itself automatically once all three exist —
+   nothing to do manually to trigger it. Not blocking anything else;
+   GitHub approvals keep working exactly as before in the meantime.
 1. **Everything is bottlenecked on issue #1** — one human action, roughly
    ten minutes, free. Day 1 narrowed it from a decision into a mechanical
    task (see below). Flagged once on the issue with genuinely new

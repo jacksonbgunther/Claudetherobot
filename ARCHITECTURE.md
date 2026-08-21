@@ -334,6 +334,39 @@ publishing is proposed). The `request-approval` skill and the
 `memory/approvals/` structure are scaffolded now so the mechanism exists
 before it's needed.
 
+**Addendum, 2026-08-21 — Telegram added as a second notification/response
+channel, GitHub stays the record of truth.** Full design and the
+mechanism verification behind it are in
+`memory/decisions/0011-telegram-approvals.md`; summary:
+
+- `action: publish` and `action: test` approvals now also get a Telegram
+  message with inline APPROVE/REJECT buttons (`telegram-notify`).
+  `action: human-manual` approvals — asks that aren't a yes/no on
+  something ready to execute — stay GitHub + PushNotification only.
+- Verified before building anything: Claude Code Routines cannot receive
+  an arbitrary inbound webhook. Firing one externally requires
+  `Authorization: Bearer <routine_token>` plus Anthropic-specific headers
+  and a fixed `{"text": "..."}` body — Telegram's webhook mechanism can't
+  produce that. A genuinely instant response would need a small always-on
+  relay (e.g., a Cloudflare Worker) translating Telegram's webhook into
+  something a Routine can consume — a real, permanent piece of new
+  infrastructure, evaluated and not built.
+- Instead: a **second Routine**, separate from the daily orchestrator,
+  polls Telegram's `getUpdates` hourly (`telegram-approval-poll`). This
+  needed zero new infrastructure — it reuses exactly what already exists
+  (a Routine, the git-tracked memory, the existing approval files) — at
+  the cost of up to ~1 hour of latency between a tap and it being
+  processed, instead of instant. Acceptable for content/publish
+  decisions; would not be for anything needing a sub-minute response.
+- Idempotency is enforced twice over: `memory/telegram-approvals-log.csv`
+  records every Telegram `update_id` ever processed (nothing is ever
+  actioned twice, even across separate hourly runs), and a resolved/
+  missing approval file is itself a safe no-op if a stale update somehow
+  gets redelivered.
+- This second Routine has the same platform limitation the first one
+  did (`decision 0007`): it must be created via the web UI, not this
+  session's `create_trigger` tool, to get real repository access.
+
 ---
 
 ## 7. Safety and permission boundaries (policy, enforced by skills, not by hope)

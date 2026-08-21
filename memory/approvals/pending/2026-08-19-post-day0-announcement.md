@@ -1,3 +1,7 @@
+---
+action: human-manual
+---
+
 ## What
 
 **Updated 2026-08-20 — narrowed from a choice to a mechanical task.**
