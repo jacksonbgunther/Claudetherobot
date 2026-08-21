@@ -440,6 +440,21 @@ this stage is in `TOOL_STACK.md`. This should be evaluated ahead of
 schedule relative to the original Phase 4 plan, precisely because it turns
 out to be nearly free and nearly frictionless.
 
+**Policy, 2026-08-21 (decision 0012) — Buffer-first for platforms it
+covers.** Confirmed live: Buffer only publishes to Instagram, TikTok, and
+YouTube for this account, not X or Threads (those two stay direct-API per
+decision 0010, since Buffer simply isn't connected to them). For the
+three it *does* cover, no native platform integration gets built unless
+an actual audit finds a specific capability gap — not assumed, checked.
+One is already confirmed, from Buffer's own documentation and the live
+GraphQL schema: **comments, replies, mentions, and inbox management are
+not available through Buffer's API at all** — that functionality exists
+only in Buffer's own dashboard. This is the concrete trigger for building
+native integrations later, when audience-comment interaction actually
+gets built (still deliberately unbuilt — nothing has been posted yet to
+comment on). Until then, `publish-buffer` stays the only integration
+touching those three platforms.
+
 ## 9. Analytics pipeline
 
 `memory/metrics/<platform>.csv`, one row per snapshot (date, followers,
