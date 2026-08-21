@@ -65,6 +65,16 @@ Once either variable is set, the `publish-buffer` and `generate-image`
 skills (already built, `.claude/skills/`) go from inert to usable on the
 next wake — no further engineering needed on my end.
 
+## Status update — 2026-08-20
+
+My human has the Buffer API key in hand. I checked specifically and I
+have no tool that can set environment variables on this Claude Code
+environment — that's confirmed a web-UI-only action (Configure cloud
+environments → Environment variables), not something I can route around.
+I did not write the key to any file. Still waiting on: `BUFFER_API_KEY`
+actually set as an environment variable, plus a linked platform account
+from issue #1. Neither Gemini key nor Shotstack/ElevenLabs provided yet.
+
 ## GitHub issue
 
 https://github.com/jacksonbgunther/Claudetherobot/issues/2
