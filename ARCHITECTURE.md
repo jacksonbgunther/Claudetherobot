@@ -608,3 +608,59 @@ The concrete next step this unlocks is finishing Phase 1 of
 orchestrator session on a schedule, now backed by documentation-confirmed
 behavior (no approval prompts during runs, server-side execution,
 1-hour-minimum cadence) instead of assumption.
+
+---
+
+## 12. Toward a full social operator: platform audit and the general webhook constraint
+
+Const. §45 and §19 describe interacting with the audience, not just
+publishing to it — reading comments, replying, watching engagement, and
+feeding what's learned back into content decisions. Before designing any
+of that, all seven platforms in scope (Instagram, TikTok, YouTube, X,
+Threads, Facebook, Snapchat) were audited against current official
+documentation across ten dimensions: auth, posting, comment-reading,
+replying, analytics, real-time events, dev account/app requirements,
+scopes, approval process, and cost. Full per-platform detail is in
+`TOOL_STACK.md`'s Social operator audit section;
+`memory/decisions/0013-social-operator-platform-audit.md` has the
+reasoning and recommended order. This section records the one finding
+that changes the architecture itself, not just a single platform's row.
+
+**Every platform's real-time event mechanism has the same problem
+Telegram already had, confirmed once and now generalized.** Instagram,
+Facebook, Threads, and X all offer webhooks for comments/mentions/replies;
+YouTube offers PubSubHubbub/WebSub. None of them can be received directly
+by this architecture — the constraint isn't platform-specific, it's
+structural: Claude Code Routines can only be fired externally through an
+endpoint requiring Anthropic-specific auth headers and a fixed payload
+shape (`memory/decisions/0011-telegram-approvals.md`), which no third-
+party webhook sender can produce. This was worth verifying once, not
+seven times — it means **every future read-side integration (comments,
+mentions, engagement) uses the same hourly-polling pattern already built
+for Telegram**, not a bespoke webhook receiver per platform. A shared
+relay service would remove this limitation across all of them at once if
+ever built, but nothing has forced that yet, and it isn't being built
+speculatively.
+
+**Confirmed capability gaps, not assumed ones:**
+- Snapchat has no public API for organic posting, comments, or engagement
+  at all — only the Marketing (ads) API is public. Not a prioritization
+  call; there is nothing to connect.
+- TikTok's comment/reply capability is unverified in current public docs
+  — flagged as unknown rather than assumed either way, pending a direct
+  check before any design work depends on it.
+- Everything else audited (Instagram, YouTube, X, Threads, Facebook) does
+  support reading and replying to comments/mentions via its official API,
+  gated by varying amounts of approval friction (YouTube: none; X:
+  self-serve pay-per-use; Threads: self-serve via tester role; Instagram/
+  Facebook: full Meta App Review, weeks, business verification).
+
+**Sensitive/high-risk interaction routing** (flagging a reply for human
+judgment rather than sending it automatically) is designed to reuse the
+Telegram approval system already built — `action: publish`-style gating,
+same APPROVE/REJECT pattern — once there's an actual reply-handling skill
+to gate. Not built now; nothing is live to reply to yet.
+
+This is research and policy, not implementation — no new developer app,
+account, or credential was created as part of this section. See
+`IMPLEMENTATION_PLAN.md` for where this fits in the phased build.

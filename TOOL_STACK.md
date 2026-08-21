@@ -92,3 +92,219 @@ spend track actual output and stop anytime.
 - Nothing above is connected or authorized yet. This is the recommendation
   from research — see the approval request for what's actually being asked
   of my human right now.
+
+---
+
+## Social operator audit (2026-08-21) — 7 platforms, full capability set
+
+Scope: not just publishing — auth, posting, reading comments, replying,
+analytics, real-time events, dev account/app requirements, scopes,
+approval process, and cost, verified against current official docs, not
+assumed. Full reasoning and recommended order in
+`memory/decisions/0013-social-operator-platform-audit.md`.
+
+**The one finding that applies to every platform below, not just one:**
+several of these offer real webhooks (Instagram, Facebook, Threads,
+YouTube's PubSubHubbub/WebSub, X's Account Activity API). **None of them
+can be received directly** — the same gap already found and solved for
+Telegram (`memory/decisions/0011-telegram-approvals.md`): Claude Code
+Routines can't accept an arbitrary inbound webhook without a relay service
+that doesn't exist yet. Everywhere below, "webhooks" means "the platform
+offers this, we can't consume it without new infrastructure" — polling a
+read endpoint on an hourly Routine is the actual path, same pattern as
+Telegram, not a new problem to solve per platform.
+
+### Instagram (Graph API)
+
+1. **Auth**: OAuth via Meta Login; Instagram Business/Creator account.
+2. **Posting**: Yes — already covered by Buffer (decision 0012); native
+   API also supports it (container create + publish) if ever needed.
+3. **Comment-reading**: Yes, with `instagram_manage_comments`.
+4. **Reply**: Yes, same scope — reply, hide/unhide, delete.
+5. **Analytics**: Yes, separate Insights API/scope (reach, impressions,
+   engagement).
+6. **Webhooks**: Yes (real-time comment/mention events) — unusable
+   directly, see above; poll instead.
+7. **Dev account/app**: Meta Developer account + App, Instagram use case.
+8. **Scopes**: `instagram_business_basic` (basic), `instagram_manage_comments`,
+   `instagram_manage_messages`, `instagram_manage_insights` — the useful
+   ones for interaction are all Advanced Access.
+9. **Approval**: Meta App Review required for `instagram_manage_comments`
+   — business verification, live app, privacy policy, a screencast of the
+   full flow. Standard permissions ~2-4 weeks; sensitive ones (messages)
+   longer, and a requested revision restarts the clock. Unverified: whether
+   a "tester" role (which worked for Threads, below) bypasses this for
+   single-account use — worth checking directly before assuming either way.
+10. **Cost**: $0, no pricing tier on the Graph API itself.
+
+### TikTok
+
+1. **Auth**: OAuth 2.0, TikTok for Developers account + registered app.
+2. **Posting**: Yes — already covered by Buffer; native Content Posting
+   API also supports Direct Post / Upload to Inbox.
+3. **Comment-reading**: **Unverified** — not clearly documented in this
+   research pass. Do not assume this exists; a dedicated docs check
+   against TikTok's current API reference is needed before any comment/
+   reply skill gets designed around it.
+4. **Reply**: Same — unverified, same caveat.
+5. **Analytics**: Partial — post-level view/like/comment/share counts are
+   available via the Content Posting API response; deeper analytics exist
+   for research/business accounts, not fully mapped here.
+6. **Webhooks**: Confirmed only for TikTok Shop (order events) and upload-
+   status callbacks — no confirmed general comment/mention webhook.
+7. **Dev account/app**: TikTok for Developers account + app.
+8. **Scopes**: `video.publish`, `video.upload`, `user.info.basic` confirmed;
+   a comment-specific scope was not identified in this pass.
+9. **Approval**: Content Posting API requires an audit for broader
+   visibility — unaudited apps are limited (e.g., private-only posting)
+   until reviewed.
+10. **Cost**: Free, quota-limited (exact numbers not detailed in current
+    docs found).
+
+### YouTube (Data API v3)
+
+1. **Auth**: OAuth 2.0 for write actions; API key suffices for public
+   read-only data.
+2. **Posting**: Yes — already covered by Buffer, and independently the
+   easiest native API of all seven (no business verification at all).
+3. **Comment-reading**: Yes — `commentThreads.list`, 1 unit/call.
+4. **Reply**: Yes — `comments.insert` as a reply, 50 units/call.
+5. **Analytics**: Basic counts on the video resource itself; deeper
+   metrics need the separate YouTube Analytics API (its own OAuth scope).
+6. **Webhooks**: Yes, via PubSubHubbub/WebSub — same "can't receive it
+   directly" caveat as above; poll `commentThreads.list` instead.
+7. **Dev account/app**: Google Cloud project + OAuth consent screen (or
+   just an API key for read-only).
+8. **Scopes**: `youtube.force-ssl` (read/write) or narrower
+   `youtube.readonly`.
+9. **Approval**: None for personal/internal use in "testing" publishing
+   status (few users) — this is the one platform in this whole audit with
+   **no business-verification gate at all**. Google's OAuth verification
+   process only kicks in for public apps requesting sensitive scopes from
+   many users, which doesn't apply here.
+10. **Cost**: Free — 10,000 units/day per Google Cloud project (reads
+    ~1 unit, writes ~50, uploads ~100 as of the Dec 2025 quota change
+    already recorded in `publish-buffer`'s notes... actually recorded
+    against the direct YouTube Data API row above in Tier 1).
+
+### X (Twitter) API v2
+
+Full detail already in decision 0010; current as of this pass, re-checked:
+
+1. **Auth**: OAuth 1.0a (posting) or OAuth 2.0; X Developer Portal account.
+2. **Posting**: Yes — `POST /2/tweets`, ~$0.015/post (no link),
+   ~$0.20/post (with a link).
+3. **Comment-reading**: Yes — mentions/search endpoints, ~$0.005/read
+   (capped 2M reads/month), or the Account Activity API (webhook-based).
+4. **Reply**: Yes — same endpoint as posting, with `reply.in_reply_to_tweet_id`,
+   same per-post cost.
+5. **Analytics**: Basic public metrics (likes/reposts/reply counts) on
+   read endpoints; deeper analytics need higher access.
+6. **Webhooks**: Account Activity API exists, billed per event delivered
+   — same "can't receive it directly" caveat; would need the same relay
+   gap solved, or poll instead.
+7. **Dev account/app**: X Developer Portal, Project + App, Developer
+   Agreement acceptance.
+8. **Scopes**: read/write user-context scopes via OAuth 1.0a or 2.0.
+9. **Approval**: None — fully self-serve, pay-per-use is the default for
+   new developers as of 2026, no manual review step.
+10. **Cost**: Pay-per-use, no monthly minimum (legacy Basic/Pro tiers are
+    closed to new signups and being auto-migrated to pay-per-use).
+
+### Threads API
+
+Full detail already in decision 0010; expanded here on reply/mention
+capability specifically:
+
+1. **Auth**: OAuth via Meta Login; Threads profile connected to the app.
+2. **Posting**: Yes — `threads_content_publish`.
+3. **Comment-reading**: Yes — `threads_read_replies`.
+4. **Reply**: Yes — `threads_manage_replies`; mentions specifically via
+   `threads_manage_mentions` (added alongside mention webhooks, Oct 2024).
+5. **Analytics**: Yes — `threads_manage_insights`: views, likes, replies,
+   reposts, quotes, shares per post, plus follower count/demographics.
+6. **Webhooks**: Yes — reply and mention webhooks exist (since Oct 2024)
+   — same "can't receive directly" caveat; poll instead.
+7. **Dev account/app**: Meta Developer account + App, Threads use case —
+   same app already used for publishing (decision 0010).
+8. **Scopes**: `threads_basic`, `threads_content_publish`,
+   `threads_read_replies`, `threads_manage_replies`, `threads_manage_insights`,
+   `threads_manage_mentions`, `threads_delete`, `threads_location_tagging`.
+9. **Approval**: Normally Meta App Review per scope — but as already
+   established for publishing, adding the human as a **tester** grants
+   all scopes immediately for single-account use, no review wait. Same
+   should apply to the reply/mention scopes, on the same app.
+10. **Cost**: $0, no pricing tier. Rate limits: 250 posts / 1,000 replies /
+    100 deletions / 500 location searches per rolling 24 hours.
+
+### Facebook (Pages, Graph API)
+
+Not currently part of ClaudeTheRobot's platform lineup (no Facebook Page
+exists or is planned) — audited because asked, ranked accordingly below.
+
+1. **Auth**: OAuth via Meta Login; a Page Access Token tied to a Page the
+   human administers.
+2. **Posting**: Yes — publish text/photo/video/link to the Page feed.
+3. **Comment-reading**: Yes — comments aren't a separate subscription,
+   they're nested under the `feed` field (filter `item == "comment"`).
+4. **Reply**: Yes, with `pages_manage_engagement`.
+5. **Analytics**: Yes — Page Insights API.
+6. **Webhooks**: Yes — subscribe to `feed`/`mentions`/`messages` — same
+   "can't receive directly" caveat as everywhere else.
+7. **Dev account/app**: Meta Developer account + App; a Facebook Page.
+8. **Scopes**: `pages_manage_posts`, `pages_read_engagement`,
+   `pages_manage_engagement`, `pages_show_list`.
+9. **Approval**: Meta App Review for extended permissions — same review
+   family as Instagram (use-case description, screencast).
+10. **Cost**: $0.
+
+### Snapchat
+
+1. **Auth**: OAuth via Snap Kit login, for the pieces that exist.
+2. **Posting**: **No public API exists for organic Snaps, Stories, or
+   Spotlight content.** Confirmed, not assumed — Snapchat's only public
+   developer surface for content is the Marketing (ads) API, which is
+   about paid campaigns, not organic creator posting.
+3. **Comment-reading**: No documented public surface.
+4. **Reply**: No documented public surface.
+5. **Analytics**: Ad/campaign reporting only, via the Marketing API — not
+   organic post analytics.
+6. **Webhooks**: None found for organic content/engagement.
+7. **Dev account/app**: Snap Developer Portal, for the Marketing API only.
+8. **Scopes**: Ads-scoped only.
+9. **Approval**: Marketing API is open to all developers, self-serve —
+   irrelevant here since it doesn't cover what we'd actually want.
+10. **Cost**: N/A for our use case — there's nothing to connect to.
+
+**Verdict: Snapchat is not viable for organic content or engagement via
+any public API right now.** This isn't a prioritization call, it's a
+capability that doesn't exist to prioritize. Revisit only if Snapchat
+ever opens an organic content API — nothing to build or connect today.
+
+### Recommended connection order
+
+1. **X + Threads accounts** (issue #1) — already the current blocker,
+   already scoped (decision 0010), cheapest and fastest of everything
+   here: no review process for either, and pay-per-use/free respectively.
+2. **YouTube native API, comments + replies** — once there's real YouTube
+   content live via Buffer. The single lowest-friction platform in this
+   entire audit for the interaction capabilities Buffer can't provide
+   (decision 0012) — free, no business verification, works today.
+3. **Threads reply/mention scopes** — same Meta app already used for
+   publishing; likely just an app-config change plus (if the tester
+   pattern holds for these scopes too) no new review wait.
+4. **Instagram comment/reply** — real value, but the first genuinely
+   slow one: Meta App Review, business verification, 2-4+ weeks. Worth
+   starting only once there's an actual Instagram presence worth actively
+   engaging on, not speculatively.
+5. **Facebook** — lowest priority of the viable platforms; no current
+   strategic reason to have a Page at all. Revisit only if that changes.
+6. **TikTok comment/reply** — blocked on verifying the capability exists
+   at all before any design work; if it doesn't, TikTok stays Buffer-
+   publish-only indefinitely, which is a fine, already-adopted outcome
+   (decision 0012), not a gap to force closed.
+7. **Snapchat** — not pursued; no public API path exists for this use
+   case.
+
+Nothing in this list is implemented or connected yet. No accounts beyond
+what issue #1 already covers, no spend, no new developer apps created.
