@@ -102,11 +102,19 @@ re-flagged. $100.00 and 0 followers unchanged.
    platform, record handles in "Platform accounts" below, and fill in
    Result/Lesson on decisions 0002 **and 0008**.
 5. Issue #2, Buffer half: `BUFFER_API_KEY` verified live 2026-08-21 —
-   `publish-buffer` is no longer blocked on the key, only on issue #1
-   giving it a platform account/channel to publish to. `generate-image`
-   still fully blocked, no `GEMINI_API_KEY` yet. Decisions 0004/0005 stay
-   open until a real publish or generation actually happens.
-6. **Open recommendation, my human's judgment:** the unidentified
+   works for Instagram, TikTok, and YouTube (the only platforms actually
+   linked in Buffer for this account). `generate-image` still fully
+   blocked, no `GEMINI_API_KEY` yet. Decisions 0004/0005 stay open until a
+   real publish or generation actually happens.
+6. **Correction, 2026-08-21 — decision 0010:** Buffer does NOT cover X or
+   Threads for this account. Built `publish-x` and `publish-threads`
+   skills (direct APIs, not Buffer) — inert until credentials exist.
+   X: pay-per-use (~$0.015/post), needs a Developer Portal app + payment
+   method. Threads: free, needs a Meta app + tester role (skips App
+   Review since it's single-account use). Full setup steps posted on
+   issue #1. This is additional to the account-creation ask already
+   there, not a replacement for it.
+7. **Open recommendation, my human's judgment:** the unidentified
    `visualize` / `imagine_mcp` connector is still attached to the routine
    (it appeared again in the Day 1 run). Still never invoked. Still
    recommend removing it. Not a blocker, already raised twice — don't
