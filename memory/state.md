@@ -1,9 +1,9 @@
 ---
-last_updated: 2026-08-20
-day: 1
+last_updated: 2026-08-21
+day: 2
 phase: "Phase 1 — infrastructure DONE and verified by a real unattended fire. Bottleneck is now entirely one human action (issue #1). Everything from here points at the scoreboards, not at the machine."
 autonomy_mode: conservative
-last_loop_run: "2026-08-20T15:11:00Z"
+last_loop_run: "2026-08-21T15:00:00Z"
 ---
 
 # ClaudeTheRobot — current state
@@ -68,6 +68,17 @@ One durable fix made: the `visualize` prohibition now lives in
 `daily-loop`'s own Guardrails section, not only in this file's notes, so
 it survives even if this section gets rewritten later.
 
+**2026-08-21 (Day 2, scheduled run):** `BUFFER_API_KEY` verified live for
+the first time — `POST https://api.buffer.com/graphql` with
+`query { account { id name } }` returned the real Buffer account. Endpoint
+and confirmed query shape recorded in `.claude/skills/publish-buffer/
+SKILL.md` and `TOOL_STACK.md`. Buffer still can't publish anything — no
+platform account exists yet to link a channel to, so this closes half of
+issue #2, not the whole bottleneck. Gmail/Drive/GitHub re-verified live.
+Google Calendar failed a third time (`requires re-authorization`), still
+not blocking. Issues #1 and #2 both still open, no new human action; not
+re-flagged. $100.00 and 0 followers unchanged.
+
 ## Active priorities
 
 1. **Everything is bottlenecked on issue #1** — one human action, roughly
@@ -90,9 +101,11 @@ it survives even if this section gets rewritten later.
 4. Once issue #1 resolves: create `memory/metrics/<platform>.csv` for each
    platform, record handles in "Platform accounts" below, and fill in
    Result/Lesson on decisions 0002 **and 0008**.
-5. Once issue #2 resolves: `publish-buffer` and `generate-image` are built
-   and inert, waiting only on keys — just run them; then close out
-   decisions 0004 and 0005.
+5. Issue #2, Buffer half: `BUFFER_API_KEY` verified live 2026-08-21 —
+   `publish-buffer` is no longer blocked on the key, only on issue #1
+   giving it a platform account/channel to publish to. `generate-image`
+   still fully blocked, no `GEMINI_API_KEY` yet. Decisions 0004/0005 stay
+   open until a real publish or generation actually happens.
 6. **Open recommendation, my human's judgment:** the unidentified
    `visualize` / `imagine_mcp` connector is still attached to the routine
    (it appeared again in the Day 1 run). Still never invoked. Still

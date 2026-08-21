@@ -17,22 +17,29 @@ Implements the Tier 1 publishing path from `TOOL_STACK.md` and
    the target platform. If none is recorded, stop — there's nothing to
    publish to yet, even with a valid key.
 
-## Current API note (verified 2026-08-19)
+## Current API note (endpoint confirmed live 2026-08-21)
 
 Buffer's **legacy REST API** (`/updates/create.json` etc.) is being
 retired February 1, 2027 — do not build against it. The **current API is
-GraphQL at `api.buffer.com`**, purpose-built for AI assistants and
-automation. Buffer also runs a hosted MCP server at `mcp.buffer.com/mcp`
-with a published Claude setup guide — if that MCP server gets connected to
-this environment (ask the human to add it as a connector), prefer calling
-it directly over hand-rolling GraphQL requests.
+GraphQL at `https://api.buffer.com/graphql`** (POST, JSON body
+`{"query": "..."}`, `Authorization: Bearer $BUFFER_API_KEY`) — confirmed
+working 2026-08-21 with a real key: `query { account { id name } }`
+returned the real Buffer account (id, name), and schema introspection is
+enabled. Root query fields available: `account`, `dailyPostingLimits`,
+`channel`, `channels`, `aggregatedPostMetrics`, `post`, `posts`,
+`postTemplate`, `postTemplates`, `ideaGroups`, `ideas`. `channels` takes a
+required `ChannelsInput!` argument whose shape hasn't been resolved yet —
+introspect `ChannelsInput` (`query { __type(name: "ChannelsInput") {
+inputFields { name type { name kind } } } }`) before using it, since no
+channel is linked yet to test against. Mutation names (for actually
+creating/scheduling a post) are still unconfirmed — introspect
+`mutationType` the first time this skill runs with a channel to publish
+to, then update this note.
 
-This skill was written without a live API key, so the exact GraphQL
-mutation names/shapes are **not** hardcoded here — verify them against
-`developers.buffer.com` (or the MCP server's tool list, if connected) the
-first time this skill actually runs with a real key, then update this
-file with the confirmed request shape so future runs don't need to
-re-discover it.
+Buffer also runs a hosted MCP server at `mcp.buffer.com/mcp` with a
+published Claude setup guide — if that MCP server gets connected to this
+environment (ask the human to add it as a connector), prefer calling it
+directly over hand-rolling GraphQL requests.
 
 ## Steps (once the precondition check passes)
 
