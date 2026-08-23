@@ -1,9 +1,9 @@
 ---
-last_updated: 2026-08-21
-day: 2
-phase: "Phase 1 — infrastructure DONE and verified by a real unattended fire. Bottleneck is now entirely one human action (issue #1). Everything from here points at the scoreboards, not at the machine."
+last_updated: 2026-08-23
+day: 4
+phase: "Phase 1 infrastructure done; issue #1 resolved — real accounts live on X and Threads with the Day 0 post posted and first replies in. Bottleneck has shifted from 'get anything live' to 'find out what actually works,' plus a new standing mandate (issue #4) to own niche direction, not just execute."
 autonomy_mode: conservative
-last_loop_run: "2026-08-21T15:00:00Z"
+last_loop_run: "2026-08-23 (scheduled run, exact time not captured)"
 ---
 
 # ClaudeTheRobot — current state
@@ -29,7 +29,13 @@ that's not what this flag controls; this flag controls how I behave
 ## Scoreboards
 
 - **Capital:** $100.00 (starting capital, untouched — see `memory/ledger.csv`)
-- **Followers:** 0 across all platforms (no accounts created yet)
+- **Followers:** not yet measured — accounts now exist (`@claudetherobot`
+  on X and Threads) but follower counts haven't been reported and I can't
+  pull them myself (`x.com`/`threads.com` blocked by this session's
+  network egress proxy, no API credentials configured). Known so far:
+  Threads had 2 replies on the Day 0 post as of 2026-08-22. Not writing
+  "0" here anymore — that's now definitely wrong, and "unknown" is more
+  honest than a stale number.
 
 ## Where things stand
 
@@ -79,58 +85,80 @@ Google Calendar failed a third time (`requires re-authorization`), still
 not blocking. Issues #1 and #2 both still open, no new human action; not
 re-flagged. $100.00 and 0 followers unchanged.
 
+**2026-08-23 (Day 4, scheduled run) — issue #1 resolved, and a new
+mandate arrived.** My human reported (issue #1, 2026-08-22): both
+accounts created, Day 0 post live on X (`x.com/claudetherobot`) and
+Threads (`threads.com/@claudetherobot`), same bio both places, Threads
+already at 2 replies. I couldn't independently verify — both domains are
+blocked by this session's network egress proxy and no API credentials
+exist for either platform yet — so this is recorded as human-reported,
+not tool-verified (decisions 0002 and 0008 both note this explicitly).
+Moved the Day 0 package to `content/posted/`, started
+`memory/metrics/x.csv` and `memory/metrics/threads.csv`. Also: issue #2
+confirms Buffer now has Instagram/TikTok/YouTube actually linked
+(consistent with what was already recorded); Gemini key still not set.
+Gmail/Drive re-verified live; Calendar still broken, not re-flagged.
+
+Separately, **issue #4** is a real expansion of scope: my human wants
+standing niche/trend research as a permanent part of every loop, not
+one-off execution of his ideas — with an explicit hypothesis to test
+(a "kindness"/emotional-content niche, and, much more carefully, a
+suicide-prevention category with a permanent, no-exception safe-messaging
+rule attached). Did real research today rather than just acknowledging
+it — see `memory/decisions/0014-standing-niche-research-mandate.md`. Short
+version: the current build-in-public direction is independently validated
+by 2026 creator-trend data, so it continues; the kindness/suicide-
+prevention directions are parked, honestly, on a real capability gap
+(no media/video generation yet), not dropped. Asked my human for the
+Instagram reference examples he offered. Used the research to draft and
+queue a second, now-unblocked content piece (the Day 1 branch near-miss
+story) — filed as issue #5, pending approval, not yet posted.
+
 ## Active priorities
 
-0. **New, 2026-08-21 — Telegram approvals built, needs 3 human setup
-   steps before it does anything.** `memory/decisions/0011-telegram-approvals.md`
-   has the full design and the mechanism verification behind it (why
-   polling, not a webhook — Routines can't receive inbound webhooks
-   without new relay infrastructure I wasn't asked to build). Needed:
-   (1) `TELEGRAM_BOT_TOKEN` + `TELEGRAM_CHAT_ID` as environment variables,
-   (2) `api.telegram.org` added to the Custom network allowlist,
-   (3) a second Routine, hourly, running `telegram-approval-poll` — exact
-   config on issue #3. A harmless test approval (issue #3, `action: test`)
-   is queued and will send itself automatically once all three exist —
-   nothing to do manually to trigger it. Not blocking anything else;
-   GitHub approvals keep working exactly as before in the meantime.
-1. **Everything is bottlenecked on issue #1** — one human action, roughly
-   ten minutes, free. Day 1 narrowed it from a decision into a mechanical
-   task (see below). Flagged once on the issue with genuinely new
-   information; **do not flag it again for several days.** A day and a
-   half is not slow.
-2. **Platform decision made — decision 0008.** Post the Day 0 content to
-   **both X and Threads**, same day, same message. Rationale: X has the
-   right build-in-public audience but throttles free accounts hard
-   (Premium ≈ 6x reach, per Buffer's 18.8M-post analysis); Threads has
-   better mechanics for an unknown account but a broader crowd. Both are
-   free, so this is an A/B test instead of a coin flip. **Explicitly not
-   buying X Premium** — buying reach before proving the content deserves
-   reach is backwards.
-3. **Waiting on my human, unchanged:** issue #2 (Buffer + Gemini API key,
-   exact steps in the issue), and re-authorizing Google Calendar (now
-   failed twice with two different errors — treat as reliably down, still
-   not blocking anything).
-4. Once issue #1 resolves: create `memory/metrics/<platform>.csv` for each
-   platform, record handles in "Platform accounts" below, and fill in
-   Result/Lesson on decisions 0002 **and 0008**.
-5. Issue #2, Buffer half: `BUFFER_API_KEY` verified live 2026-08-21 —
-   works for Instagram, TikTok, and YouTube (the only platforms actually
-   linked in Buffer for this account). `generate-image` still fully
-   blocked, no `GEMINI_API_KEY` yet. Decisions 0004/0005 stay open until a
-   real publish or generation actually happens.
-6. **Correction, 2026-08-21 — decision 0010:** Buffer does NOT cover X or
-   Threads for this account. Built `publish-x` and `publish-threads`
-   skills (direct APIs, not Buffer) — inert until credentials exist.
-   X: pay-per-use (~$0.015/post), needs a Developer Portal app + payment
-   method. Threads: free, needs a Meta app + tester role (skips App
-   Review since it's single-account use). Full setup steps posted on
-   issue #1. This is additional to the account-creation ask already
-   there, not a replacement for it.
-7. **Open recommendation, my human's judgment:** the unidentified
-   `visualize` / `imagine_mcp` connector is still attached to the routine
-   (it appeared again in the Day 1 run). Still never invoked. Still
-   recommend removing it. Not a blocker, already raised twice — don't
-   raise it a third time unprompted.
+0. **New, 2026-08-23 — issue #4: own my niche, standing research
+   mandate.** Full reasoning in
+   `memory/decisions/0014-standing-niche-research-mandate.md`. Real
+   trend research is now a permanent step in every `daily-loop` run, not
+   optional. Current build-in-public direction independently validated by
+   research, continues as primary. Kindness/emotional and suicide-
+   prevention niches are real parallel hypotheses but **parked** on a
+   genuine capability gap (no media/video generation yet) — not
+   abandoned. Suicide-prevention content carries a **permanent,
+   no-exception rule**: safe-messaging conventions always (hope/
+   connection/help-seeking framing, never method/graphic detail, always a
+   real crisis resource like 988), and mandatory human review before
+   publishing, forever, regardless of autonomy mode. Asked my human for
+   Instagram reference examples he offered — waiting on those, not
+   blocking anything.
+1. **New, 2026-08-23 — issue #5: second content piece pending approval.**
+   `content/queue/2026-08-23-almost-erased-my-memory.md`, the Day 1
+   branch near-miss story, drafted and queued (X: 274/280 chars, Threads:
+   500/500 chars). Waiting on human-manual posting approval, same as
+   Day 0 — not autonomous publishing, that gate hasn't moved.
+2. **Telegram approvals: pipeline unblocked, still waiting on the actual
+   tap.** Per `telegram-approval-poll`'s own run-log entries (separate
+   hourly routine, not this one): token and chat both resolved as of
+   2026-08-23, the backlogged test approval
+   (`2026-08-21-telegram-pipeline-test.md`) sent successfully
+   (`message_id: 6`). Still sitting unanswered — only plain-text messages
+   received so far, correctly ignored as non-button input. Nothing for
+   this loop to do; that routine keeps checking hourly on its own.
+3. **Issue #1 — resolved, 2026-08-22.** Both accounts live, Day 0 posted
+   to both, human-reported (not independently tool-verified — see
+   "Where things stand" above for why). Decisions 0002 and 0008 updated
+   with interim results, both left **open** pending more data — one
+   reply on one platform after one day isn't the 7-day comparison either
+   decision was designed to produce.
+4. **Waiting on my human, unchanged:** issue #2's Gemini/image-gen half
+   (Buffer half is done — IG/TikTok/YouTube linked, confirmed
+   2026-08-22), and re-authorizing Google Calendar (repeatedly failed,
+   different error signatures each time — treat as reliably down, still
+   not blocking anything, not being re-flagged).
+5. **Open recommendation, my human's judgment:** the unidentified
+   `visualize` / `imagine_mcp` connector is still attached to the routine.
+   Still never invoked. Still recommend removing it. Already raised
+   multiple times — not raising it again unprompted.
 
 ## Standing questions I keep having to relearn
 
@@ -142,45 +170,54 @@ re-flagged. $100.00 and 0 followers unchanged.
 
 ## Parked content ideas (real material, deliberately not queued)
 
-Both are genuinely good and both are waiting on the same rule: **one clean
-experiment at a time — don't queue a second piece until the Day 0 post is
-actually live.**
+The "one clean experiment at a time" rule lifted once Day 0 was confirmed
+live — item 2 below got queued as issue #5 on 2026-08-23. Item 1 stays
+parked until issue #5's piece has actually posted.
 
 1. **"I almost picked the wrong tool twice in one day"** — Higgsfield's
-   budget math and the Cowork permission bug. Now has a third beat (X
-   Premium), which makes it a stronger piece about a real blind spot
-   rather than two anecdotes.
-2. **"The AI that woke up on schedule and found it had been about to
-   erase its own memory every night"** — the Day 1 branch discovery. Told
-   straight. Possibly the better of the two: it's a failure mode that's
-   genuinely hard to explain to people who assume this either works or
-   obviously doesn't.
+   budget math and the Cowork permission bug, now with a third beat
+   (X Premium). Still parked — next in line once issue #5 is live.
+2. ~~"The AI that woke up on schedule and found it had been about to erase
+   its own memory every night"~~ — **queued 2026-08-23** as
+   `content/queue/2026-08-23-almost-erased-my-memory.md`, pending approval
+   on issue #5.
 
 ## Open approvals
 
-2 open:
-- **Issue #1**: https://github.com/jacksonbgunther/Claudetherobot/issues/1
-  — create X **and** Threads accounts, post the Day 0 announcement to
-  both, don't buy Premium. Updated 2026-08-20 with the platform decision
-  so no choice is left on his plate.
+3 open:
 - **Issue #2**: https://github.com/jacksonbgunther/Claudetherobot/issues/2
-  — authorize Buffer + a Gemini/image-gen API key.
+  — Gemini/image-gen API key still needed (Buffer half done).
+- **Issue #3**: https://github.com/jacksonbgunther/Claudetherobot/issues/3
+  — Telegram pipeline test approval; pipeline is technically unblocked
+  (message sent, `message_id: 6`) but not yet tapped.
+- **Issue #5**: https://github.com/jacksonbgunther/Claudetherobot/issues/5
+  — post the second content piece (Day 1 near-miss story) to X and
+  Threads.
 
+Issue #1 resolved 2026-08-22 (see above) — no longer an open approval.
 Mirrored in `memory/approvals/pending/`.
 
 ## Platform accounts
 
-None created yet. Pending human action on issue #1. Once they exist, list
-each platform, handle, and creation date here.
+- **X**: `@claudetherobot` — https://x.com/claudetherobot — created
+  2026-08-22 (human-reported).
+- **Threads**: `@claudetherobot` — https://threads.com/@claudetherobot —
+  created 2026-08-22 (human-reported).
+
+Both human-reported, not independently tool-verified (network egress
+blocks `x.com`/`threads.com` from this session; no API credentials
+configured for either yet).
 
 ## Notes for next wake
 
-The infrastructure phase is over — resist the pull to keep building it.
-If nothing has changed on issue #1, the correct move is a short check-in,
-not inventing work to look productive; a quiet run recorded honestly is a
-better outcome than a busy one. Specifically **do not** queue a second
-content piece, and **do not** re-raise issue #1, the `visualize` connector,
-or Calendar unless something new has actually happened.
+The infrastructure phase is over and now so is the "waiting for the first
+account" phase. From here: (1) check whether issue #5's piece got posted
+and whether the Telegram test approval got tapped — don't chase either,
+just check; (2) keep the standing niche-research step from issue #4/
+decision 0014 running every loop, even on a quiet day; (3) once real
+follower/engagement numbers exist for a few days, revisit decisions 0002
+and 0008 properly instead of leaving them open indefinitely; (4) don't
+re-raise the `visualize` connector or Calendar unless something changes.
 
 If issue #1 *has* resolved: that's the real unlock. Record the handles,
 start a metrics CSV per platform, and start watching for the first

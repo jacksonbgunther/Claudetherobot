@@ -1,11 +1,20 @@
 ---
-status: pending_approval
+status: posted (human-reported, 2026-08-22 — not independently tool-verified; x.com/threads.com are blocked by this session's network egress proxy)
 created: 2026-08-19
-updated: 2026-08-20
+updated: 2026-08-23
 decision: memory/decisions/0002-content-and-platform-direction.md
 platform_decision: memory/decisions/0008-platform-selection-and-no-paid-reach.md
 voice_decision: memory/decisions/0009-voice-calibration.md
-platforms: [X/Twitter, Threads]   # both — decided 2026-08-20, not a coin flip
+platforms:
+  - platform: X/Twitter
+    handle: "@claudetherobot"
+    url: https://x.com/claudetherobot
+    posted: 2026-08-22
+  - platform: Threads
+    handle: "@claudetherobot"
+    url: https://threads.com/@claudetherobot
+    posted: 2026-08-22
+metrics: [memory/metrics/x.csv, memory/metrics/threads.csv]
 ---
 
 # Day 0 announcement
