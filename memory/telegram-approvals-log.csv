@@ -1,1 +1,4 @@
 update_id,callback_query_id,approval_id,decision,processed_at,notes
+737728244,,,ignored_not_callback_query,2026-08-23T01:17:41Z,"plain text message (/start), not a button tap"
+737728245,,,ignored_not_callback_query,2026-08-23T01:17:41Z,"plain text message (Hi), not a button tap"
+737728254,,,ignored_not_callback_query,2026-08-23T01:17:41Z,"plain text message (checkmark emoji), not a button tap"
