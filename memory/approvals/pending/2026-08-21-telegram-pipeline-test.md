@@ -1,6 +1,6 @@
 ---
 action: test
-telegram_message_id:
+telegram_message_id: 5
 ---
 
 ## What

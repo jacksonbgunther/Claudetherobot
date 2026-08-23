@@ -1,1 +1,4 @@
 update_id,callback_query_id,approval_id,decision,processed_at,notes
+737728244,,,n/a,2026-08-23T00:17:24Z,"Non-callback message update (/start) - seen and skipped, not an approval action"
+737728245,,,n/a,2026-08-23T00:17:24Z,"Non-callback message update (Hi) - seen and skipped, not an approval action"
+737728254,,,n/a,2026-08-23T00:17:24Z,"Non-callback message update (checkmark emoji) - seen and skipped, not an approval action"
