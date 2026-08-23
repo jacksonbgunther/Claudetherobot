@@ -1,9 +1,10 @@
 ---
 last_updated: 2026-08-23
 day: 4
-phase: "Phase 1 infrastructure done; issue #1 resolved — real accounts live on X and Threads with the Day 0 post posted and first replies in. Bottleneck has shifted from 'get anything live' to 'find out what actually works,' plus a new standing mandate (issue #4) to own niche direction, not just execute."
+phase: "Phase 1 infrastructure done; issue #1 resolved — real accounts live on X and Threads with the Day 0 post posted and first replies in. Bottleneck has shifted from 'get anything live' to 'find out what actually works,' plus a new standing mandate (issue #4) to own niche direction, not just execute. Same day, second wake: Gemini and Shotstack keys verified live, ElevenLabs key verified-but-scoped, Threads token present but network-blocked — the media-generation gap is starting to close."
 autonomy_mode: conservative
 last_loop_run: "2026-08-23 (scheduled run, exact time not captured)"
+last_check_in: "2026-08-23 ~09:07 UTC (scheduled check-in, not a full loop — new credentials verified)"
 ---
 
 # ClaudeTheRobot — current state
@@ -99,6 +100,31 @@ confirms Buffer now has Instagram/TikTok/YouTube actually linked
 (consistent with what was already recorded); Gemini key still not set.
 Gmail/Drive re-verified live; Calendar still broken, not re-flagged.
 
+**Same day, second wake (check-in, ~09:07 UTC):** found four new
+credentials in the environment that weren't there this morning —
+`GEMINI_API_KEY`, `SHOTSTACK_API_KEY`, `ELEVENLABS_API_KEY`,
+`THREADS_ACCESS_TOKEN`/`THREADS_USER_ID` — my human signed up for all four
+accounts overnight (Gmail confirms: Google AI Studio, Meta for Developers,
+ElevenLabs, Shotstack signup emails, 2026-08-22 23:23 UTC–2026-08-23 01:38
+UTC). Verified each with a real, non-destructive, $0 call rather than
+trusting presence alone: **Gemini live** (`GET /v1beta/models` returned a
+real model list — closes issue #2's Gemini ask), **Shotstack live**
+(`GET /stage/templates`, `200 OK`), **ElevenLabs present but scoped**
+(`GET /v1/user` and `GET /v1/models` both `401 missing_permissions` — key
+authenticates, just not scoped for reads; likely fine for its actual job,
+unconfirmed), **Threads token present but unverifiable** — a real call to
+`graph.threads.net` hit a `403` at this session's own network egress
+proxy, not Meta's API; same class of block Gemini hit before its domain
+was allowlisted on 2026-08-20. Updated `TOOL_STACK.md` and decision 0010
+with the verified-vs-blocked distinction, commented on issue #2 with the
+same, and asked (not urgently) for `graph.threads.net` to be added to the
+environment's network allowlist. No content generated, no money spent —
+this was verification, not yet use. Two of Tier 2's three media tools
+(image gen, video assembly) are now genuinely live, which means issue #4's
+"parked on a media-generation gap" framing is already partly stale — not
+rebuilt yet, that's real next-loop work once there's an actual piece to
+make with them.
+
 Separately, **issue #4** is a real expansion of scope: my human wants
 standing niche/trend research as a permanent part of every loop, not
 one-off execution of his ideas — with an explicit hypothesis to test
@@ -123,8 +149,11 @@ story) — filed as issue #5, pending approval, not yet posted.
    optional. Current build-in-public direction independently validated by
    research, continues as primary. Kindness/emotional and suicide-
    prevention niches are real parallel hypotheses but **parked** on a
-   genuine capability gap (no media/video generation yet) — not
-   abandoned. Suicide-prevention content carries a **permanent,
+   media-generation capability gap that's now partly closing (Gemini
+   image-gen and Shotstack video assembly both verified live 2026-08-23,
+   same day, second wake — ElevenLabs present but scoped, unconfirmed for
+   actual generation). Not rebuilt into an active plan yet — that's real
+   next-loop work once there's a specific piece to make. Suicide-prevention content carries a **permanent,
    no-exception rule**: safe-messaging conventions always (hope/
    connection/help-seeking framing, never method/graphic detail, always a
    real crisis resource like 988), and mandatory human review before
@@ -150,12 +179,23 @@ story) — filed as issue #5, pending approval, not yet posted.
    with interim results, both left **open** pending more data — one
    reply on one platform after one day isn't the 7-day comparison either
    decision was designed to produce.
-4. **Waiting on my human, unchanged:** issue #2's Gemini/image-gen half
-   (Buffer half is done — IG/TikTok/YouTube linked, confirmed
-   2026-08-22), and re-authorizing Google Calendar (repeatedly failed,
-   different error signatures each time — treat as reliably down, still
-   not blocking anything, not being re-flagged).
-5. **Open recommendation, my human's judgment:** the unidentified
+4. **Issue #2 — effectively resolved, 2026-08-23 second wake.** Gemini
+   key verified live, Buffer half already done (IG/TikTok/YouTube linked,
+   confirmed 2026-08-22), Shotstack/ElevenLabs (the issue's "optional, not
+   urgent" line) also now present and mostly verified. Commented on the
+   issue with the full breakdown; my human can close it whenever
+   convenient. Google Calendar re-authorization still waiting, unchanged
+   (repeatedly failed, different error signatures each time — treat as
+   reliably down, still not blocking anything, not being re-flagged).
+5. **New, 2026-08-23 second wake — Threads needs one network-allowlist
+   add.** `THREADS_ACCESS_TOKEN`/`THREADS_USER_ID` are set but unverifiable
+   from this session: `graph.threads.net` is blocked by this session's
+   network egress proxy (`403`, policy denial), same class of block Gemini
+   hit before its domain was allowlisted 2026-08-20. Asked (not urgently,
+   in the issue #2 comment) for `graph.threads.net` to be added the same
+   way. Not blocking — Threads publishing needs `request-approval`
+   per-post regardless of whether the token is confirmed.
+6. **Open recommendation, my human's judgment:** the unidentified
    `visualize` / `imagine_mcp` connector is still attached to the routine.
    Still never invoked. Still recommend removing it. Already raised
    multiple times — not raising it again unprompted.
@@ -210,16 +250,19 @@ configured for either yet).
 
 ## Notes for next wake
 
-The infrastructure phase is over and now so is the "waiting for the first
-account" phase. From here: (1) check whether issue #5's piece got posted
-and whether the Telegram test approval got tapped — don't chase either,
-just check; (2) keep the standing niche-research step from issue #4/
-decision 0014 running every loop, even on a quiet day; (3) once real
+The infrastructure phase is over, the "waiting for the first account"
+phase is over, and as of today the "waiting for media-generation tools"
+phase is half over too. From here: (1) check whether issue #5's piece got
+posted and whether the Telegram test approval got tapped — don't chase
+either, just check; (2) keep the standing niche-research step from issue
+#4/decision 0014 running every loop, even on a quiet day; (3) once real
 follower/engagement numbers exist for a few days, revisit decisions 0002
 and 0008 properly instead of leaving them open indefinitely; (4) don't
-re-raise the `visualize` connector or Calendar unless something changes.
-
-If issue #1 *has* resolved: that's the real unlock. Record the handles,
-start a metrics CSV per platform, and start watching for the first
-response — the first real data point this project has ever had. Decisions
-0002 and 0008 both close on that data, not before.
+re-raise the `visualize` connector or Calendar unless something changes;
+(5) check whether `graph.threads.net` got added to the network allowlist —
+if so, actually verify the Threads token for real (`GET /v1.0/{user-id}`)
+and update decision 0010 and `TOOL_STACK.md` from "unverified" to a real
+result; (6) Gemini and Shotstack are genuinely live now — when a content
+package would actually benefit from a real image or short video (not
+speculatively), that's usable, through the normal ledger/approval
+discipline for any real spend.

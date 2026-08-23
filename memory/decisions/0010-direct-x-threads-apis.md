@@ -67,8 +67,18 @@ from me.
 
 ## Result
 
-*(pending — depends on the app/credential setup)*
+*(partial, interim — 2026-08-23)* Threads credentials (`THREADS_ACCESS_TOKEN`,
+`THREADS_USER_ID`) are now set as of this check-in — real progress, not yet
+usable. A real `GET /v1.0/{user-id}` call to `graph.threads.net` failed with
+`403` at this session's network egress proxy (`connect_rejected`), so the
+token itself is still unverified. This is a network-allowlist gap, not a
+credential problem — the same class of block that held up Gemini's endpoint
+until `generativelanguage.googleapis.com` was added to the allowlist on
+2026-08-20. Needs `graph.threads.net` added the same way before
+`publish-threads` can go from inert to usable. X API credentials still don't
+exist at all — that half of this decision is unchanged.
 
 ## Lesson
 
-*(pending)*
+*(pending — will close once Threads is actually verified live and, ideally,
+X credentials exist too)*
