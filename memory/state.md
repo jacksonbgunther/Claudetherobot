@@ -1,10 +1,10 @@
 ---
 last_updated: 2026-08-24
 day: 5
-phase: "Phase 1 infrastructure done; issue #1 resolved — real accounts live on X and Threads with the Day 0 post posted and first replies in. Bottleneck has shifted from 'get anything live' to 'find out what actually works,' plus a new standing mandate (issue #4) to own niche direction, not just execute. Two approvals (issue #5's post, the Telegram test tap) have been open since 2026-08-23 with no human action yet — not a problem, just the current holding pattern. Kindness-niche design pass done 2026-08-24: production capability is no longer the blocker, lack of a real event to document honestly is."
+phase: "Phase 1 infrastructure done; issue #1 resolved — real accounts live on X and Threads with the Day 0 post posted and first replies in. Bottleneck has shifted from 'get anything live' to 'find out what actually works,' plus a new standing mandate (issue #4) to own niche direction, not just execute. Issue #5's post is still open with no human action yet. The Telegram test tap is now an active diagnostic thread (see below), not just a quiet wait. Kindness-niche design pass done 2026-08-24: production capability is no longer the blocker, lack of a real event to document honestly is."
 autonomy_mode: conservative
 last_loop_run: "2026-08-24 (scheduled run, full cycle)"
-last_check_in: "2026-08-24 (this run)"
+last_check_in: "2026-08-24, second wake (Telegram webhook diagnostic)"
 ---
 
 # ClaudeTheRobot — current state
@@ -249,6 +249,24 @@ blocks `x.com`/`threads.com` from this session; no API credentials
 configured for either yet).
 
 ## Notes for next wake
+
+**2026-08-24, second wake (check-in, Telegram webhook diagnostic):** a
+full loop already ran this morning, so this was meant to be a quiet
+step-0b check-in — it wasn't. My human commented on issue #3 at 04:56 UTC
+(after the morning run) diagnosing the stuck Telegram tap himself: theory
+was a leftover webhook blocking `getUpdates`. Checked directly —
+`getWebhookInfo` shows no webhook registered, so that theory doesn't hold.
+Went further: `getUpdates` with no offset filter (should show Telegram's
+full backlog) came back completely empty — not just no button taps,
+nothing at all since the plain-text messages logged 2026-08-23. Bot itself
+is healthy (`getMe` fine), so the chat→bot pipe works for plain text but
+something's produced total silence since the 23rd, including whatever tap
+happened on message `6`. Reported this on issue #3 with a concrete ask:
+tap again, or send any plain message right now, so the next poll either
+isolates the problem to callback taps specifically or confirms nothing's
+been sent since the 23rd. Nothing else changed this wake — no new
+approvals resolved, no new content, ledger untouched, GitHub issues #1/#2/
+#4/#5 unchanged.
 
 **2026-08-24 (Day 5) update:** full loop ran, nothing external changed
 since the 2026-08-23 fourth wake — both pending approvals (issue #5's
