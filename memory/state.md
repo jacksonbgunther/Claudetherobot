@@ -1,10 +1,12 @@
 ---
 last_updated: 2026-08-24
 day: 5
-phase: "Phase 1 infrastructure done; issue #1 resolved — real accounts live on X and Threads with the Day 0 post posted and first replies in. Bottleneck has shifted from 'get anything live' to 'find out what actually works,' plus a new standing mandate (issue #4) to own niche direction, not just execute. Issue #5's post is still open with no human action yet. The Telegram test tap is now an active diagnostic thread (see below), not just a quiet wait. Kindness-niche design pass done 2026-08-24: production capability is no longer the blocker, lack of a real event to document honestly is."
+phase: "Phase 1 infrastructure done; issue #1 resolved — real accounts live on X and Threads with the Day 0 post posted and first replies in. Bottleneck has shifted from 'get anything live' to 'find out what actually works,' plus two new standing mandates (issue #6: monetization triggers, issue #7: Telegram digest + honest production-quality bar) on top of #4's niche-ownership mandate. Issue #5's post is still open with no human action yet. The Telegram test tap is still an active diagnostic thread. Correction today: image generation was never actually verified live — a real test call found the free tier has 0 quota for generation, billing isn't enabled (issue #8). Kindness-niche direction stays parked, now on a confirmed capability gap rather than an assumed-closed one."
 autonomy_mode: conservative
-last_loop_run: "2026-08-24 (scheduled run, full cycle)"
-last_check_in: "2026-08-24, second wake (Telegram webhook diagnostic)"
+last_loop_run: "2026-08-24 (scheduled run, third wake — new issues #6/#7 handled)"
+last_check_in: "2026-08-24, third wake (issues #6/#7, Gemini billing finding, digest skill built)"
+last_morning_digest: "2026-08-24"
+last_evening_digest:
 ---
 
 # ClaudeTheRobot — current state
@@ -142,6 +144,19 @@ story) — filed as issue #5, pending approval, not yet posted.
 
 ## Active priorities
 
+-1. **New, 2026-08-24 — issue #8: enable Gemini billing (blocks real
+   quality testing).** Image generation doesn't actually work yet — free
+   tier has a 0 quota for generation models, confirmed via a real `429`
+   today. Human needs to enable billing on the Google Cloud project behind
+   `GEMINI_API_KEY`. Blocks issue #7 part 2's quality-test ask and decision
+   0014's kindness-direction test. See `memory/decisions/0016-*.md`.
+-0.5. **New, 2026-08-24 — issues #6/#7: two new standing mandates.**
+   #6 (monetization triggers): logged "not yet" with a concrete threshold
+   in `memory/decisions/0015-monetization-not-yet.md` — revisit at 500
+   followers, 7 days of self-verified engagement data, or unprompted
+   inbound interest. #7 (Telegram digest + quality bar): digest skill
+   built and live-tested (`.claude/skills/telegram-daily-digest/`,
+   `message_id: 8`); quality-bar half surfaced the issue #8 finding above.
 0. **New, 2026-08-23 — issue #4: own my niche, standing research
    mandate.** Full reasoning in
    `memory/decisions/0014-standing-niche-research-mandate.md`. Real
@@ -224,7 +239,7 @@ parked until issue #5's piece has actually posted.
 
 ## Open approvals
 
-3 open:
+4 open:
 - **Issue #2**: https://github.com/jacksonbgunther/Claudetherobot/issues/2
   — Gemini/image-gen API key still needed (Buffer half done).
 - **Issue #3**: https://github.com/jacksonbgunther/Claudetherobot/issues/3
@@ -233,6 +248,10 @@ parked until issue #5's piece has actually posted.
 - **Issue #5**: https://github.com/jacksonbgunther/Claudetherobot/issues/5
   — post the second content piece (Day 1 near-miss story) to X and
   Threads.
+- **New, 2026-08-24 — Issue #8**:
+  https://github.com/jacksonbgunther/Claudetherobot/issues/8 — enable
+  billing on the Google Cloud project behind `GEMINI_API_KEY`; image
+  generation is confirmed non-functional without it.
 
 Issue #1 resolved 2026-08-22 (see above) — no longer an open approval.
 Mirrored in `memory/approvals/pending/`.
@@ -297,8 +316,42 @@ and 0008 properly instead of leaving them open indefinitely; (4) don't
 re-raise the `visualize` connector or Calendar unless something changes;
 (5) if `graph.threads.net` ever clearly resolves (clean success, not just
 a different failure mode), verify the Threads token for real
-(`GET /v1.0/{user-id}`) and update decision 0010 and `TOOL_STACK.md`;
-(6) Gemini and Shotstack are genuinely live now — when a content package
-would actually benefit from a real image or short video (not
-speculatively), that's usable, through the normal ledger/approval
-discipline for any real spend.
+(`GET /v1.0/{user-id}`) and update decision 0010 and `TOOL_STACK.md`.
+
+**2026-08-24, third wake (~15:00-15:30 UTC): two new issues (#6, #7)
+handled for real, plus a correction to a prior claim.** Full loop already
+ran this morning (03:12 UTC) so this started as a step-0b check, but
+found genuinely new GitHub activity: issue #6 (standing monetization
+mandate) and issue #7 (Telegram digest + honest quality-vs-niche bar),
+both filed 2026-08-24 13:57/14:10 UTC. Handled both with real work rather
+than acknowledgment:
+
+- **Issue #6**: logged "not yet" honestly with a concrete revisit
+  threshold in decision 0015 — followers/engagement genuinely unmeasured,
+  no credible pitch exists yet.
+- **Issue #7 part 1**: built and live-tested
+  `.claude/skills/telegram-daily-digest/`, wired into `daily-loop` (new
+  step 0c + an addition to step 7), gated on new
+  `last_morning_digest`/`last_evening_digest` state fields. Real morning
+  digest sent today, `message_id: 8`.
+- **Issue #7 part 2**: attempted a real test image generation — this
+  surfaced that **Gemini image generation doesn't actually work**: the
+  `imagen-3.0-generate-002:predict` endpoint referenced in
+  `generate-image/SKILL.md` is retired (`404`); the correct current
+  endpoint (`generateContent` on a `gemini-*-image` model) returns `429`
+  because the free tier has a **0 quota** for generation specifically.
+  This means the 2026-08-23 "verified live" status in `TOOL_STACK.md` was
+  wrong — only a free metadata call had ever been tested. Corrected
+  `TOOL_STACK.md` and `generate-image/SKILL.md` (endpoint + status), and
+  filed a `human-manual` approval (issue #8) to enable billing. Decision
+  0016 has the full writeup. No image was actually generated, no cost
+  incurred (a 429 doesn't bill).
+
+Next wake: (6) once issue #8 is resolved, do the real kindness-style and
+ASMR-style test generations issue #7 asked for, evaluate honestly, and
+update decisions 0014/0016 with the actual verdict before anything in
+either style goes near `content/queue/`; (7) confirm tomorrow's first
+full-cycle run fires the morning digest correctly and that the evening
+digest fires exactly once around/after 20:00 UTC today; (8) if `generate-image`
+or any other skill is used before issue #8 resolves, expect it to fail —
+don't retry past the documented block.

@@ -15,25 +15,35 @@ Check whether `GEMINI_API_KEY` is set in the environment. If it isn't,
 the open approval request, and fall back to a text-only content package
 instead of pretending an image was made.
 
-## Verified API shape (2026-08-19, from ai.google.dev)
+**Also check billing, not just the key.** Verified 2026-08-24: a real key
+being present does not mean generation works. The free tier has a **0
+quota** for image-generation models specifically (confirmed via a real
+`429 RESOURCE_EXHAUSTED`, `limit: 0` on `generate_content_free_tier_requests`).
+If billing isn't enabled on the Google Cloud project behind this key, every
+call here will 429 before it ever reaches the cost-tracking step below. See
+`memory/approvals/pending/2026-08-24-enable-gemini-billing.md` — if that's
+still open, don't attempt generation, report the block instead.
 
-REST call:
+## API shape (corrected 2026-08-24, from a real call — see `TOOL_STACK.md`)
+
+The old Imagen 3 `predict` endpoint referenced here previously is gone
+(`404` as of 2026-08-24). Current path is a Gemini image-capable model via
+`generateContent`:
 
 ```
-curl "https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-002:predict" \
+curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent" \
   -H "x-goog-api-key: $GEMINI_API_KEY" \
   -H "Content-Type: application/json" \
   -X POST \
-  -d '{"instances":[{"prompt":"<the prompt>"}],"parameters":{"sampleCount":1}}'
+  -d '{"contents":[{"parts":[{"text":"<the prompt>"}]}]}'
 ```
 
-(Or, if using the `google-genai` SDK instead of raw REST:
-`client.models.generate_images(model="imagen-3.0-generate-002", prompt=...,
-config=types.GenerateImagesConfig(number_of_images=1))`.) Confirm the
-current model ID and exact request shape against
-`https://ai.google.dev/gemini-api/docs/imagen` the first time this runs
-for real — model IDs and endpoints do change — and update this file if
-they've moved.
+On success, the image comes back as base64 `inlineData` inside
+`candidates[0].content.parts`, not a separate `predictions` array — decode
+and save it. Re-confirm the current model ID and exact request/response
+shape against `https://ai.google.dev/gemini-api/docs/image-generation` the
+first time this runs for real after billing is enabled — model IDs and
+endpoints do change — and update this file if they've moved.
 
 ## Cost discipline
 

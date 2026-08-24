@@ -70,6 +70,15 @@ most recent entry.
   a manual run and a scheduled fire from doubling up on the same day.
 - Otherwise, proceed with the full cycle below.
 
+## 0c. Morning digest (once per day, full-cycle runs only)
+
+If this run is proceeding as a **full cycle** (not the quiet step-0b
+check-in above) and `memory/state.md`'s `last_morning_digest` field
+doesn't already equal today's date, send the morning message via
+`telegram-daily-digest` (mode: morning), then set `last_morning_digest` to
+today in step 7. Skip silently if Telegram isn't configured — see that
+skill's own precondition check.
+
 ## 1. Read identity and state
 
 - `CONSTITUTION.md` — if this session doesn't already have it loaded,
@@ -179,6 +188,15 @@ move on.
 - Update `memory/state.md`: `last_updated`, `day` (if it changed),
   `phase`, active priorities, open approvals, "notes for next wake."
 - Set `last_loop_run` to this run's timestamp.
+- **Evening digest**: if the current UTC hour is 20 or later and
+  `last_evening_digest` doesn't already equal today's date, send the
+  evening message via `telegram-daily-digest` (mode: evening) — this
+  check runs on every wake (full cycle or check-in), not just full
+  cycles, so a late-day check-in still catches it. Set
+  `last_evening_digest` to today on success. Skip silently if Telegram
+  isn't configured.
+- If step 0c sent a morning digest this run, set `last_morning_digest` to
+  today here too.
 - Only mark something changed if a tool call actually confirmed it.
 
 ## 8. HUMAN GATES
