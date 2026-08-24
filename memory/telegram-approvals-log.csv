@@ -2,3 +2,4 @@ update_id,callback_query_id,approval_id,decision,processed_at,notes
 737728244,,,ignored_not_callback_query,2026-08-23T01:17:41Z,"plain text message (/start), not a button tap"
 737728245,,,ignored_not_callback_query,2026-08-23T01:17:41Z,"plain text message (Hi), not a button tap"
 737728254,,,ignored_not_callback_query,2026-08-23T01:17:41Z,"plain text message (checkmark emoji), not a button tap"
+737728290,921000031193260340,2026-08-21-telegram-pipeline-test,approved_test,2026-08-24T05:18:54Z,"A: test approval — moved to resolved/, message edited to confirm; answerCallbackQuery failed (query too old/expired, non-critical, spinner clear only)"

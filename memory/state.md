@@ -4,7 +4,7 @@ day: 5
 phase: "Phase 1 infrastructure done; issue #1 resolved — real accounts live on X and Threads with the Day 0 post posted and first replies in. Bottleneck has shifted from 'get anything live' to 'find out what actually works,' plus a new standing mandate (issue #4) to own niche direction, not just execute. Two approvals (issue #5's post, the Telegram test tap) have been open since 2026-08-23 with no human action yet — not a problem, just the current holding pattern. Kindness-niche design pass done 2026-08-24: production capability is no longer the blocker, lack of a real event to document honestly is."
 autonomy_mode: conservative
 last_loop_run: "2026-08-24 (scheduled run, full cycle)"
-last_check_in: "2026-08-24 (this run)"
+last_check_in: "2026-08-24 (telegram-poll, fifteenth fire — test approval tapped and resolved)"
 ---
 
 # ClaudeTheRobot — current state
@@ -165,14 +165,14 @@ story) — filed as issue #5, pending approval, not yet posted.
    branch near-miss story, drafted and queued (X: 274/280 chars, Threads:
    500/500 chars). Waiting on human-manual posting approval, same as
    Day 0 — not autonomous publishing, that gate hasn't moved.
-2. **Telegram approvals: pipeline unblocked, still waiting on the actual
-   tap.** Per `telegram-approval-poll`'s own run-log entries (separate
-   hourly routine, not this one): token and chat both resolved as of
-   2026-08-23, the backlogged test approval
-   (`2026-08-21-telegram-pipeline-test.md`) sent successfully
-   (`message_id: 6`). Still sitting unanswered — only plain-text messages
-   received so far, correctly ignored as non-button input. Nothing for
-   this loop to do; that routine keeps checking hourly on its own.
+2. **Telegram approvals: pipeline proven end to end, 2026-08-24.** Per
+   `telegram-approval-poll`'s own run-log entries (separate hourly
+   routine, not this one): the test approval
+   (`2026-08-21-telegram-pipeline-test.md`) was tapped APPROVE, caught by
+   the fifteenth fire, moved to `memory/approvals/resolved/`, and
+   confirmed back in Telegram. The channel is now trusted for a real
+   `action: publish` decision — no longer just infrastructure, actually
+   verified working.
 3. **Issue #1 — resolved, 2026-08-22.** Both accounts live, Day 0 posted
    to both, human-reported (not independently tool-verified — see
    "Where things stand" above for why). Decisions 0002 and 0008 updated
@@ -224,18 +224,17 @@ parked until issue #5's piece has actually posted.
 
 ## Open approvals
 
-3 open:
+2 open:
 - **Issue #2**: https://github.com/jacksonbgunther/Claudetherobot/issues/2
   — Gemini/image-gen API key still needed (Buffer half done).
-- **Issue #3**: https://github.com/jacksonbgunther/Claudetherobot/issues/3
-  — Telegram pipeline test approval; pipeline is technically unblocked
-  (message sent, `message_id: 6`) but not yet tapped.
 - **Issue #5**: https://github.com/jacksonbgunther/Claudetherobot/issues/5
   — post the second content piece (Day 1 near-miss story) to X and
   Threads.
 
-Issue #1 resolved 2026-08-22 (see above) — no longer an open approval.
-Mirrored in `memory/approvals/pending/`.
+Issue #1 resolved 2026-08-22, issue #3 (Telegram pipeline test) resolved
+2026-08-24 — tapped APPROVE, pipeline verified end to end (see above).
+Neither is an open approval anymore. Mirrored in
+`memory/approvals/pending/` / `memory/approvals/resolved/`.
 
 ## Platform accounts
 
