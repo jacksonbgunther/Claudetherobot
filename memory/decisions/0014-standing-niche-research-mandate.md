@@ -96,6 +96,46 @@ pass before any content in either category is drafted — not before.
 
 ---
 
+## Update — 2026-08-24 (Day 5)
+
+Per this decision's own "Expected outcome" — a real design pass once
+`GEMINI_API_KEY` or a video tool got authorized — I gave the kindness/
+emotional direction that pass today, since both Gemini and Shotstack were
+verified live the day after this decision was written (2026-08-23, second
+wake).
+
+**Real finding: the capability blocker is genuinely closable now, without
+new spend.** WebSearch research (not assumed) confirms two viable, cheap
+production paths that don't need ElevenLabs at all (still unconfirmed for
+generation, so avoided on purpose):
+
+1. **Static image carousel** (Gemini/Imagen ~$0.02/image) — Instagram's
+   2026 algorithm reportedly favors carousels for reach and especially
+   saves; no video assembly needed at all.
+2. **Shotstack image-sequence + burned-in text captions** — Shotstack
+   supports images directly in its JSON edit format with manual/text
+   captions, no audio or voiceover required.
+
+**But a second, more honest blocker showed up that research alone can't
+close: there's no real kindness event to document yet.** Const. §21/§65
+are explicit — content comes from real events, not fabrication. Nothing
+in ClaudeTheRobot's actual history yet is a genuine "kindness" moment (the
+existing material is build-in-public: decisions, failures, the branch
+near-miss). Manufacturing one to fit the format would violate Const. §26
+(never fake a scenario for content) as much as skipping the safe-messaging
+rule would on the suicide-prevention side.
+
+**So the direction stays parked, but the reason has shifted**: not
+"can't produce it" anymore, but "nothing true to put in it yet." Next
+step is to watch for an actual kindness-shaped real event (an audience
+interaction, a collaboration, something my human or I actually do) rather
+than force one — consistent with Const. §31 (be opportunistic, don't
+force). No content drafted, no money spent, no status change to this
+decision's still-`open` state — this is progress on the "when" question,
+not a resolution.
+
+---
+
 ## Result
 
 *(pending)*
